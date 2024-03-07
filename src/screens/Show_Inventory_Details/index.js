@@ -1,42 +1,35 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
-import Modal from "react-native-modal";
 import { screenHeight } from '../../constants/screenConstants';
-import { InventoryItemListComponent } from '../../components/InventoryItemListComponent';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import { ClientListComponent } from '../../components/ClientListComponent';
+import { UserListComponent } from '../../components/UserListComponent';
 
 const ShowInventoryDetailsScreen = (props) => {
 
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [selectedClient, setSelectedClient] = useState(null);
-
+    const [item, setItem] = useState('-');
+    const [clientName, setClientName] = useState(null);
+    const [projectOwner, setProjectOwner] = useState('-');
+    const [selectedItemBrandName, setSelectedItemBrandName] = useState('-');
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [searchText, setSearchText] = useState('');
 
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
-
-    const toggleClientListModal = () => {
-        setIsClientListModalVisible(!isClientListModalVisible)
-    };
-
     const selectItem = (item) => {
-        setSelectedItem(item);
-        toggleModal()
-    }
+        setSearchText(null);
 
-    const selectClientItemData = (item) => {
-        setSelectedClient(item);
-        toggleClientListModal()
+        if(item)
+        {
+            setItem(item.item);
+            setSelectedItemBrandName(item.brandName);
+            setFromClient(item.fromClient);
+            setFromThoughtWin(!item.fromClient);
+            setProjectOwner(item.name);
+            setClientName(item.clientName);
+        }
     }
 
     return (
@@ -62,6 +55,72 @@ const ShowInventoryDetailsScreen = (props) => {
                         value={searchText}
                         onChangeText={setSearchText}
                     />
+
+                </View>
+
+                {searchText &&
+                    <View style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10, maxHeight: screenHeight * 30 / 100, borderWidth: 1, borderColor: '#203060', position: 'absolute', zIndex: 1000, top: screenHeight * 6 / 100, backgroundColor: '#fff', paddingVertical: 10 }}>
+                        <UserListComponent searchTerm={searchText} selectedItem={selectItem} />
+                    </View>
+                }
+
+
+                <View style={styles.secondaryContainer}>
+                    <TouchableOpacity style={styles.itemContainer} >
+                        <Text style={styles.selectItemTextStyle}>{item}</Text>
+                        <AntDesign name="right" size={20} color="#000" />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.checkBoxContainer}>
+                    <Text style={styles.textTitle}> Item Brand Name :</Text>
+                    <TouchableOpacity style={styles.brandNameContainer} >
+                        <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
+                        <AntDesign name="down" size={20} color="#000" />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.checkBoxContainer}>
+                    <Text style={styles.textTitle}>From :</Text>
+                    <CheckBox
+                        disabled={true}
+                        value={fromClient}
+                        boxType={'square'}
+                        onValueChange={(newValue) => setFromClient(newValue)}
+                    />
+
+                    <Text style={styles.textTitle}> Client </Text>
+
+                    <CheckBox
+                        disabled={true}
+                        value={fromThoughtWin}
+                        boxType={'square'}
+                        onValueChange={(newValue) => setFromThoughtWin(newValue)}
+                    />
+
+                    <Text style={styles.textTitle}> ThoughtWin </Text>
+                </View>
+
+                {fromClient &&
+                    <View style={styles.secondaryContainer}>
+                        <TouchableOpacity style={styles.itemContainer} >
+                            <Text style={styles.selectItemTextStyle}>{clientName}</Text>
+                            <AntDesign name="right" size={20} color="#000" />
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textTitle}>Project Owner : </Text>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            style={styles.inputText}
+                            editable={false}
+                            value={projectOwner}
+                            placeholder=""
+                            placeholderTextColor="#003f5c"
+                        />
+                    </View>
                 </View>
 
             </ScrollView>

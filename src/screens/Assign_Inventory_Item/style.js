@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
     scrollViewStyle:{ 
         padding: '3%',
         paddingVertical:'5%',
-        marginTop:'10%',
+        marginTop:'5%',
     },
     inputView: {
         width: '60%',

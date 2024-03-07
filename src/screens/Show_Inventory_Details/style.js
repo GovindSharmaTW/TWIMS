@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { screenHeight } from "../../constants/screenConstants";
 
 export const styles = StyleSheet.create({
     buttonStyle: {
@@ -32,7 +33,7 @@ export const styles = StyleSheet.create({
        flex:1,
     },
     secondaryContainer :{
-        // paddingVertical:20
+        marginTop:'7%'
     },
     separatorStyle:{
         backgroundColor:'#203060',
@@ -73,7 +74,7 @@ export const styles = StyleSheet.create({
     checkBoxContainer :{ 
         flexDirection: 'row',
         justifyContent:'space-between',
-        paddingVertical:'7%',
+        paddingTop:'7%',
         alignItems:'center',
     },
     scrollViewStyle:{ 
@@ -88,7 +89,6 @@ export const styles = StyleSheet.create({
         borderColor:'#203060',
         borderWidth:1,
         paddingHorizontal: 10,
-        marginHorizontal: 20,
         marginTop: 10,
       },
       icon: {
@@ -100,5 +100,43 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
       },
+      inputContainer :{ 
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        paddingVertical:'7%',
+        alignItems:'center',
+    },
+    inputView: {
+        width: '60%',
+        borderColor:'#203060',
+        borderWidth:1,
+        borderRadius: 10,
+        height: screenHeight * 5/100,
+        justifyContent: 'center',
+        padding: 20,
+      },
+      inputText: {
+        height: 50,
+        color: '#203060',
+        fontSize:20
+      },
+      brandNameContainer:{
+        paddingHorizontal:'2%',
+        paddingVertical:'2%',
+        borderColor:'#203060',
+        borderRadius:10,
+        borderWidth:1,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        width:'50%'
+
+    },
+    selectItemBrandNameTextStyle:{
+        color:'#203060',
+        fontSize:22,
+        textAlign:'center',
+        width:'80%'
+    },
     
 })
