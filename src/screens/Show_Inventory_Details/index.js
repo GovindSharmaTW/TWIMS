@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import { ClientListComponent } from '../../components/clientListComponent';
+import { ClientListComponent } from '../../components/ClientListComponent';
 
 const ShowInventoryDetailsScreen = (props) => {
 

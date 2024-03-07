@@ -25,6 +25,12 @@ export const styles = StyleSheet.create({
         fontSize:22,
         textAlign:'center',
     },
+    selectItemBrandNameTextStyle:{
+        color:'#203060',
+        fontSize:22,
+        textAlign:'center',
+        width:'80%'
+    },
     textTitle:{
         color:'#203060',
         fontSize:22,
@@ -33,7 +39,7 @@ export const styles = StyleSheet.create({
        flex:1,
     },
     secondaryContainer :{
-        // paddingVertical:20
+        paddingTop:'7%'
     },
     separatorStyle:{
         backgroundColor:'#203060',
@@ -58,6 +64,18 @@ export const styles = StyleSheet.create({
         alignItems:'center'
 
     },
+    brandNameContainer:{
+        paddingHorizontal:'2%',
+        paddingVertical:'2%',
+        borderColor:'#203060',
+        borderRadius:10,
+        borderWidth:1,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        width:'50%'
+
+    },
     modalContainer :{ 
         backgroundColor: '#fff', 
         borderRadius: 10, 
@@ -74,7 +92,7 @@ export const styles = StyleSheet.create({
     checkBoxContainer :{ 
         flexDirection: 'row',
         justifyContent:'space-between',
-        paddingVertical:'7%',
+        paddingTop:'7%',
         alignItems:'center',
     },
 
@@ -86,11 +104,11 @@ export const styles = StyleSheet.create({
     },
     scrollViewStyle:{ 
         padding: '3%',
-        paddingVertical:'5%' 
+        paddingVertical:'5%',
+        marginTop:'10%',
     },
     inputView: {
         width: '60%',
-        backgroundColor: '#fff',
         borderColor:'#203060',
         borderWidth:1,
         borderRadius: 10,

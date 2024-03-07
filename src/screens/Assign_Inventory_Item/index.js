@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import Modal from "react-native-modal";
-import { screenHeight } from '../../constants/screenConstants';
 import { InventoryItemListComponent } from '../../components/InventoryItemListComponent';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import { ClientListComponent } from '../../components/clientListComponent';
+import { ClientListComponent } from '../../components/ClientListComponent';
+import { ItemCompanyListComponent } from '../../components/ItemCompanyListComponent';
 
 const AssignInventoryItemsScreen = (props) => {
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);
+    const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedClient, setSelectedClient] = useState(null);
-
+    const [selectedItemBrandName, setSelectedItemBrandName] = useState(null);
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [projectOwner, setProjectOwner] = useState('');
@@ -29,6 +30,10 @@ const AssignInventoryItemsScreen = (props) => {
         setIsClientListModalVisible(!isClientListModalVisible)
     };
 
+    const toggleItemBrandListModal = () => {
+        setIsBrandListModalVisible(!isBrandListModalVisible)
+    };
+
     const selectItem = (item) => {
         setSelectedItem(item);
         toggleModal()
@@ -38,6 +43,12 @@ const AssignInventoryItemsScreen = (props) => {
         setSelectedClient(item);
         toggleClientListModal()
     }
+
+    const selectItemBrandName = (item) => {
+        setSelectedItemBrandName(item);
+        toggleItemBrandListModal()
+    }
+
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -52,7 +63,7 @@ const AssignInventoryItemsScreen = (props) => {
             </View>
             <View style={styles.separatorStyle} />
 
-            <ScrollView style={styles.scrollViewStyle}>
+            <ScrollView contentContainerStyle={styles.scrollViewStyle}>
                 <View style={styles.secondaryContainer}>
                     <TouchableOpacity style={styles.itemContainer} onPress={() => toggleModal()}>
                         <Text style={styles.selectItemTextStyle}>{selectedItem ? selectedItem : 'Select Item'}</Text>
@@ -61,8 +72,15 @@ const AssignInventoryItemsScreen = (props) => {
                 </View>
 
                 <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>From :</Text>
+                    <Text style={styles.textTitle}> Item Brand Name :</Text>
+                    <TouchableOpacity style={styles.brandNameContainer} onPress={() => toggleItemBrandListModal()}>
+                        <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
+                        <AntDesign name="down" size={20} color="#000" />
+                    </TouchableOpacity>
+                </View>
 
+                <View style={styles.checkBoxContainer}>
+                    <Text style={styles.textTitle}>From :</Text>
                     <CheckBox
                         disabled={false}
                         value={fromClient}
@@ -113,8 +131,19 @@ const AssignInventoryItemsScreen = (props) => {
                     </View>
                 </Modal>
 
+                <Modal isVisible={isBrandListModalVisible}>
+                    <View style={styles.modalContainer}>
+                        <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => toggleItemBrandListModal()}>
+                            <AntDesign name="closecircleo" size={30} color="#000" />
+                        </TouchableOpacity>
+                        <View style={styles.modalHeaderSeparator} />
+
+                        <ItemCompanyListComponent selectedItem={selectItemBrandName} />
+                    </View>
+                </Modal>
+
                 <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Project Owner :</Text>
+                    <Text style={styles.textTitle}>Project Owner : </Text>
                     <View style={styles.inputView}>
                         <TextInput
                             style={styles.inputText}
