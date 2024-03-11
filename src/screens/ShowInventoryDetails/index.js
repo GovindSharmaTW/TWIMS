@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
-import { screenHeight } from '../../constants/screenConstants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import { UserListComponent } from '../../components/UserListComponent';
+import { ms } from '../../utils/scaling-utils';
 
 const ShowInventoryDetailsScreen = (props) => {
 
@@ -45,7 +45,7 @@ const ShowInventoryDetailsScreen = (props) => {
             </View>
             <View style={styles.separatorStyle} />
 
-            <ScrollView style={styles.scrollViewStyle}>
+            <ScrollView style={styles.scrollViewStyle} bounces={false}>
                 <View style={styles.container}>
                     <Feather name="search" size={24} color="#203060" style={styles.icon} />
                     <TextInput
@@ -59,7 +59,7 @@ const ShowInventoryDetailsScreen = (props) => {
                 </View>
 
                 {searchText &&
-                    <View style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10, maxHeight: screenHeight * 30 / 100, borderWidth: 1, borderColor: '#203060', position: 'absolute', zIndex: 1000, top: screenHeight * 6 / 100, backgroundColor: '#fff', paddingVertical: 10 }}>
+                    <View style={styles.userListContainer}>
                         <UserListComponent searchTerm={searchText} selectedItem={selectItem} />
                     </View>
                 }
@@ -68,7 +68,7 @@ const ShowInventoryDetailsScreen = (props) => {
                 <View style={styles.secondaryContainer}>
                     <TouchableOpacity style={styles.itemContainer} >
                         <Text style={styles.selectItemTextStyle}>{item}</Text>
-                        <AntDesign name="right" size={20} color="#000" />
+                        <AntDesign name="right" size={ ms(20)} color="#000" />
                     </TouchableOpacity>
                 </View>
 
@@ -76,7 +76,7 @@ const ShowInventoryDetailsScreen = (props) => {
                     <Text style={styles.textTitle}> Item Brand Name :</Text>
                     <TouchableOpacity style={styles.brandNameContainer} >
                         <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
-                        <AntDesign name="down" size={20} color="#000" />
+                        <AntDesign name="down" size={ms(20)} color="#000" />
                     </TouchableOpacity>
                 </View>
 

@@ -3,8 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from '../screens/Login';
 import HomeScreen from '../screens/Home';
-import AssignInventoryItemsScreen from '../screens/Assign_Inventory_Item';
-import ShowInventoryDetailsScreen from '../screens/Show_Inventory_Details';
+import AssignInventoryItemsScreen from '../screens/AssignInventoryItem';
+import ShowInventoryDetailsScreen from '../screens/ShowInventoryDetails';
 
 const Stack = createNativeStackNavigator();
 

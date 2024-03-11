@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import { ms } from '../../utils/scaling-utils';
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState('');
@@ -96,9 +97,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontWeight: 'bold',
-    fontSize: 32,
+    fontSize: ms(32),
     color: '#203060',
-    marginBottom: 40,
+    marginBottom: ms(40),
   },
   inputView: {
     width: '90%',
@@ -106,24 +107,24 @@ const styles = StyleSheet.create({
     borderColor: '#203060',
     borderWidth: 1,
     borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
+    height: ms(50),
+    marginBottom: ms(20),
     justifyContent: 'center',
-    padding: 20,
+    padding: ms(20),
   },
   inputText: {
-    height: 50,
+    height: ms(50),
     color: '#000',
   },
   loginBtn: {
     width: '90%',
     backgroundColor: '#203060',
     borderRadius: 25,
-    height: 50,
+    height: ms(50),
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
-    marginBottom: 10,
+    marginTop: ms(40),
+    marginBottom: ms(10),
   },
   loginText: {
     color: 'white',

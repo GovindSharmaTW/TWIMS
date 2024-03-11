@@ -1,23 +1,24 @@
 import { StyleSheet } from "react-native";
+import { ms } from "../../utils/scaling-utils";
 
 export const styles = StyleSheet.create({
     buttonStyle: {
         backgroundColor:'#203060',
-        padding :20,
+        padding :ms(20),
         borderRadius:10,
         marginHorizontal:'5%',
         marginVertical:'5%',
     },
     textStyle:{
         color:'#fff',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center'
     },
     headerTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
-        marginBottom:10
+        marginBottom:ms(10)
     },
     baseContainer:{
        flex:1

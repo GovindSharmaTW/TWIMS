@@ -1,6 +1,5 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useEffect, useState } from "react";
 
 export const UserListComponent = ({selectedItem,searchTerm}) => {
@@ -13,8 +12,6 @@ export const UserListComponent = ({selectedItem,searchTerm}) => {
         { id: 5, name : 'Priyesh Barade', item: 'Headphone', brandName : 'HP', fromClient:false, clientName:'Mindshine' },
         { id: 6, name : 'Neeraj Pathak', item: 'Charger', brandName : 'Apple', fromClient:true, clientName:'Luca Plus'  }
     ]
-
-    console.log("searchText Data is",searchTerm);
 
     useEffect(()=>{
         if(searchTerm)
@@ -49,7 +46,6 @@ export const UserListComponent = ({selectedItem,searchTerm}) => {
         return (
             <TouchableOpacity style={styles.listItemContainer} onPress={()=>selectedItem(item)}>
                 <Text style={styles.textStyle}> {item.name}</Text>
-                <AntDesign name="right" size={20} color="#000" />
             </TouchableOpacity>
         )
     }

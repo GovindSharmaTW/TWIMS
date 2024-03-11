@@ -1,6 +1,5 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
-import AntDesign from 'react-native-vector-icons/AntDesign'
 
 export const InventoryItemListComponent = ({selectedItem}) => {
 
@@ -17,7 +16,6 @@ export const InventoryItemListComponent = ({selectedItem}) => {
         return (
             <TouchableOpacity style={styles.listItemContainer} onPress={()=>selectedItem(item.title)}>
                 <Text style={styles.textStyle}> {item.title}</Text>
-                <AntDesign name="right" size={20} color="#000" />
             </TouchableOpacity>
         )
     }

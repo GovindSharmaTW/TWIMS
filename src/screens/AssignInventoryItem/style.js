@@ -1,39 +1,27 @@
 import { StyleSheet } from "react-native";
-import { screenHeight } from "../../constants/screenConstants";
+import { ms } from "../../utils/scaling-utils";
 
 export const styles = StyleSheet.create({
-    buttonStyle: {
-        backgroundColor:'#203060',
-        padding :20,
-        borderRadius:10,
-        marginHorizontal:'5%',
-        marginVertical:'5%',
-    },
-    textStyle:{
-        color:'#fff',
-        fontSize:22,
-        textAlign:'center'
-    },
     headerTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
-        marginBottom:10
+        marginBottom:ms(10)
     },
     selectItemTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
     },
     selectItemBrandNameTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
         width:'80%'
     },
     textTitle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
     },
     baseContainer:{
        flex:1,
@@ -108,33 +96,33 @@ export const styles = StyleSheet.create({
         marginTop:'5%',
     },
     inputView: {
-        width: '60%',
+        width: '50%',
         borderColor:'#203060',
         borderWidth:1,
         borderRadius: 10,
-        height: screenHeight * 5/100,
+        height: ms(5),
         justifyContent: 'center',
-        padding: 20,
+        padding: ms(20),
       },
       inputText: {
-        height: 50,
+        height: ms(50),
         color: '#000',
-        fontSize:18
+        fontSize:ms(18)
       },
       saveBtn: {
         width: '100%',
         backgroundColor: '#203060',
         borderRadius: 10,
-        height: 50,
+        height: ms(50),
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 40,
-        marginBottom: 10,
+        marginTop: ms(40),
+        marginBottom: ms(10),
         alignSelf:'center'
       },
       saveText: {
         color: 'white',
-        fontSize:22
+        fontSize:ms(22)
       },
     
 })

@@ -8,6 +8,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import { ClientListComponent } from '../../components/ClientListComponent';
 import { ItemCompanyListComponent } from '../../components/ItemCompanyListComponent';
+import { ms } from '../../utils/scaling-utils';
 
 const AssignInventoryItemsScreen = (props) => {
 
@@ -54,7 +55,7 @@ const AssignInventoryItemsScreen = (props) => {
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={30} color="#000" />
+                    <Ionicons name="arrow-back" size={ms(27)} color="#000" />
                 </TouchableOpacity>
 
                 <View style={{ flex: 1 }}>
@@ -67,7 +68,7 @@ const AssignInventoryItemsScreen = (props) => {
                 <View style={styles.secondaryContainer}>
                     <TouchableOpacity style={styles.itemContainer} onPress={() => toggleModal()}>
                         <Text style={styles.selectItemTextStyle}>{selectedItem ? selectedItem : 'Select Item'}</Text>
-                        <AntDesign name="right" size={20} color="#000" />
+                        <AntDesign name="right" size={ms(20)} color="#000" />
                     </TouchableOpacity>
                 </View>
 
@@ -112,7 +113,7 @@ const AssignInventoryItemsScreen = (props) => {
                 <Modal isVisible={isModalVisible}>
                     <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => toggleModal()}>
-                            <AntDesign name="closecircleo" size={30} color="#000" />
+                            <AntDesign name="closecircleo" size={ms(27)} color="#000" />
                         </TouchableOpacity>
                         <View style={styles.modalHeaderSeparator} />
 

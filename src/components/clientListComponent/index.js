@@ -1,6 +1,5 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
-import AntDesign from 'react-native-vector-icons/AntDesign'
 
 export const ClientListComponent = ({selectedItem}) => {
 
@@ -16,7 +15,6 @@ export const ClientListComponent = ({selectedItem}) => {
         return (
             <TouchableOpacity style={styles.listItemContainer} onPress={()=>selectedItem(item.clientName)}>
                 <Text style={styles.textStyle}> {item.clientName}</Text>
-                <AntDesign name="right" size={20} color="#000" />
             </TouchableOpacity>
         )
     }

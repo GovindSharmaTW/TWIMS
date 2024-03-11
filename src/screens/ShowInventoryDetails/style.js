@@ -1,33 +1,21 @@
 import { StyleSheet } from "react-native";
-import { screenHeight } from "../../constants/screenConstants";
+import { ms } from "../../utils/scaling-utils";
 
 export const styles = StyleSheet.create({
-    buttonStyle: {
-        backgroundColor:'#203060',
-        padding :20,
-        borderRadius:10,
-        marginHorizontal:'5%',
-        marginVertical:'5%',
-    },
-    textStyle:{
-        color:'#fff',
-        fontSize:22,
-        textAlign:'center'
-    },
     headerTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize: ms(22),
         textAlign:'center',
-        marginBottom:10
+        marginBottom:ms(10)
     },
     selectItemTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
     },
     textTitle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
     },
     baseContainer:{
        flex:1,
@@ -88,16 +76,16 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor:'#203060',
         borderWidth:1,
-        paddingHorizontal: 10,
-        marginTop: 10,
+        paddingHorizontal: ms(10),
+        marginTop: ms(10),
       },
       icon: {
-        marginRight: 10,
+        marginRight: ms(10),
       },
       input: {
         flex: 1,
-        paddingVertical: 10,
-        fontSize: 16,
+        paddingVertical: ms(10),
+        fontSize: ms(16),
         color: '#333',
       },
       inputContainer :{ 
@@ -111,14 +99,13 @@ export const styles = StyleSheet.create({
         borderColor:'#203060',
         borderWidth:1,
         borderRadius: 10,
-        height: screenHeight * 5/100,
+        height: ms(5),
         justifyContent: 'center',
-        padding: 20,
+        padding: ms(20),
       },
       inputText: {
-        height: 50,
         color: '#203060',
-        fontSize:20
+        fontSize:ms(20)
       },
       brandNameContainer:{
         paddingHorizontal:'2%',
@@ -134,9 +121,22 @@ export const styles = StyleSheet.create({
     },
     selectItemBrandNameTextStyle:{
         color:'#203060',
-        fontSize:22,
+        fontSize:ms(22),
         textAlign:'center',
         width:'80%'
     },
+    userListContainer:{ 
+        borderBottomLeftRadius: 10, 
+        borderBottomRightRadius: 10, 
+        maxHeight: ms(160), 
+        borderWidth: 1, 
+        borderColor: '#203060', 
+        position: 'absolute', 
+        zIndex: 1000, 
+        top: ms(50), 
+        backgroundColor: '#fff', 
+        paddingVertical:ms(10),
+        width:'100%'
+    }
     
 })
