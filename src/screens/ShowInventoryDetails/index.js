@@ -34,9 +34,9 @@ const ShowInventoryDetailsScreen = (props) => {
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
                     <Ionicons name="arrow-back" size={30} color="#000" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextStyle}>Show Inventory Details</Text>
