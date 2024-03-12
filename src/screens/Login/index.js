@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { styles } from './style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const LoginScreen = (props) => {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
   // Handle user state changes
   function onAuthStateChanged(user) {
-    console.log("onAuthStateChanged function called", user);
-    setUser(user);
-    if (initializing) setInitializing(false);
+
+    if (user) {
+      const parsedData = JSON.stringify(user);
+
+      AsyncStorage.setItem("userData", parsedData);
+    }
+
   }
 
   useEffect(() => {
+    AsyncStorage.getItem("userData")
+      .then((res) => console.log("TT01 login useeffect res", res))
+      .catch((err) => console.log("TT01 login useefect err", err))
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  if (initializing) return null;
-
-  if (!user) {
-    console.log("Please Login");
-  }
 
   const handleLogin = (email, password) => {
-    // Add your login logic here
 
-    
-    if ((email !== '' && email !== undefined) && ( password !== '' && password !== undefined )) {
+    if ((email !== '' && email !== undefined) && (password !== '' && password !== undefined)) {
       auth()
         .signInWithEmailAndPassword(email.toLowerCase(), password.toLowerCase())
         .then(() => {
@@ -51,8 +51,7 @@ const LoginScreen = (props) => {
           }
         });
     }
-    else
-    {
+    else {
       Alert.alert("Please enter email and password");
     }
   }

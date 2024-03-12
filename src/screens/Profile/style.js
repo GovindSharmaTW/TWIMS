@@ -117,7 +117,7 @@ export const styles = StyleSheet.create({
         color: Colors.primary,
         fontSize:ms(18)
       },
-      saveBtn: {
+      logoutBtn: {
         width: '100%',
         backgroundColor: Colors.primary,
         borderRadius: 10,
@@ -126,7 +126,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: vs(300)
       },
-      saveText: {
+      logoutText: {
         color: Colors.white,
         fontSize:Fonts.large
       },
