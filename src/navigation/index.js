@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {LoginScreen, HomeScreen, AssignInventoryItemsScreen, ShowInventoryDetailsScreen} from '../screens';
+import {LoginScreen, HomeScreen, AssignInventoryItemsScreen, ShowInventoryDetailsScreen, ProfileScreen} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +17,7 @@ export const RootContainer = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="AssignInventoryItems" component={AssignInventoryItemsScreen} />
         <Stack.Screen name="ShowInventoryDetails" component={ShowInventoryDetailsScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

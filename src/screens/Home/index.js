@@ -20,6 +20,10 @@ const HomeScreen = (props) => {
                 <TouchableOpacity style={styles.buttonStyle} onPress={()=> props.navigation.navigate('ShowInventoryDetails')}>
                     <Text style={styles.textStyle}>Show Inventory Details</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.buttonStyle} onPress={()=> props.navigation.navigate('Profile')}>
+                    <Text style={styles.textStyle}>Profile</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
 
