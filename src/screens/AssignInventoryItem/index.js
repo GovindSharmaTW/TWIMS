@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import Modal from "react-native-modal";
-import { InventoryItemListComponent } from '../../components/InventoryItemListComponent';
+import { InventoryItemListComponent, ClientListComponent, ItemCompanyListComponent } from '../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import { ClientListComponent } from '../../components/ClientListComponent';
-import { ItemCompanyListComponent } from '../../components/ItemCompanyListComponent';
 import { ms } from '../../utils/scaling-utils';
 
 const AssignInventoryItemsScreen = (props) => {

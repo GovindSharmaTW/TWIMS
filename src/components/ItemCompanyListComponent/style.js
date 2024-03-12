@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
-import { ms } from "../../utils/scaling-utils";
+import { Colors, Fonts } from "../../constants";
 
 export const styles = StyleSheet.create({
     textStyle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
         marginLeft:'5%'
     },
    separatorStyle:{
-        backgroundColor:'#203060',
+        backgroundColor:Colors.primary,
         height:1,
         width:'100%',
         marginVertical:'5%'

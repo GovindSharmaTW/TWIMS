@@ -1,22 +1,23 @@
 import { StyleSheet } from "react-native";
 import { ms } from "../../utils/scaling-utils";
+import { Colors, Fonts } from "../../constants";
 
 export const styles = StyleSheet.create({
     buttonStyle: {
-        backgroundColor:'#203060',
+        backgroundColor:Colors.primary,
         padding :ms(20),
         borderRadius:10,
         marginHorizontal:'5%',
         marginVertical:'5%',
     },
     textStyle:{
-        color:'#fff',
-        fontSize:ms(22),
+        color:Colors.white,
+        fontSize:Fonts.large,
         textAlign:'center'
     },
     headerTextStyle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
         textAlign:'center',
         marginBottom:ms(10)
     },
@@ -29,7 +30,7 @@ export const styles = StyleSheet.create({
         flex:1
     },
     separatorStyle:{
-        backgroundColor:'#203060',
+        backgroundColor:Colors.primary,
         height:1,
         width:'100%'
     }

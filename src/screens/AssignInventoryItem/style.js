@@ -1,27 +1,28 @@
 import { StyleSheet } from "react-native";
 import { ms } from "../../utils/scaling-utils";
+import { Colors, Fonts } from "../../constants";
 
 export const styles = StyleSheet.create({
     headerTextStyle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
         textAlign:'center',
         marginBottom:ms(10)
     },
     selectItemTextStyle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
         textAlign:'center',
     },
     selectItemBrandNameTextStyle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
         textAlign:'center',
         width:'80%'
     },
     textTitle:{
-        color:'#203060',
-        fontSize:ms(22),
+        color:Colors.primary,
+        fontSize:Fonts.large,
     },
     baseContainer:{
        flex:1,
@@ -30,13 +31,13 @@ export const styles = StyleSheet.create({
         paddingTop:'7%'
     },
     separatorStyle:{
-        backgroundColor:'#203060',
+        backgroundColor:Colors.primary,
         height:1,
         width:'100%'
     },
 
     modalHeaderSeparator:{
-        backgroundColor:'#203060',
+        backgroundColor:Colors.primary,
         height:1,
         width:'100%',
         marginBottom:'2%'
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
     itemContainer:{
         paddingHorizontal:'5%',
         paddingVertical:'2%',
-        borderColor:'#203060',
+        borderColor:Colors.primary,
         borderRadius:10,
         borderWidth:1,
         flexDirection:'row',
@@ -55,17 +56,17 @@ export const styles = StyleSheet.create({
     brandNameContainer:{
         paddingHorizontal:'2%',
         paddingVertical:'2%',
-        borderColor:'#203060',
+        borderColor:Colors.primary,
         borderRadius:10,
         borderWidth:1,
         flexDirection:'row',
         justifyContent:'space-between',
         alignItems:'center',
-        width:'50%'
+        width:'45%'
 
     },
     modalContainer :{ 
-        backgroundColor: '#fff', 
+        backgroundColor: Colors.white, 
         borderRadius: 10, 
         paddingVertical: '5%' 
     },
@@ -97,7 +98,7 @@ export const styles = StyleSheet.create({
     },
     inputView: {
         width: '50%',
-        borderColor:'#203060',
+        borderColor:Colors.primary,
         borderWidth:1,
         borderRadius: 10,
         height: ms(5),
@@ -106,12 +107,12 @@ export const styles = StyleSheet.create({
       },
       inputText: {
         height: ms(50),
-        color: '#000',
+        color: Colors.primary,
         fontSize:ms(18)
       },
       saveBtn: {
         width: '100%',
-        backgroundColor: '#203060',
+        backgroundColor: Colors.primary,
         borderRadius: 10,
         height: ms(50),
         alignItems: 'center',
@@ -121,8 +122,8 @@ export const styles = StyleSheet.create({
         alignSelf:'center'
       },
       saveText: {
-        color: 'white',
-        fontSize:ms(22)
+        color: Colors.white,
+        fontSize:Fonts.large
       },
     
 })
