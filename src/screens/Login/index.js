@@ -27,34 +27,34 @@ const LoginScreen = (props) => {
     console.log("Please Login");
   }
 
-  const handleLogin = ({ email, password }) => {
+  const handleLogin = (email, password) => {
     // Add your login logic here
-     props.navigation.navigate("Home");
 
-    // console.log("TT01 handle Login function called", email, password);
     
-    // if ((email !== '' && email !== undefined) && ( password !== '' && password !== undefined )) {
-    //   auth()
-    //     .createUserWithEmailAndPassword(email, password)
-    //     .then(() => {
-    //       console.log('User account created & signed in!');
-    //     })
-    //     .catch(error => {
-    //       if (error.code === 'auth/email-already-in-use') {
-    //         console.log('That email address is already in use!');
-    //       }
+    if ((email !== '' && email !== undefined) && ( password !== '' && password !== undefined )) {
+      auth()
+        .signInWithEmailAndPassword(email.toLowerCase(), password.toLowerCase())
+        .then(() => {
+          props.navigation.navigate("Home");
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            Alert.alert('That email address is already in use!');
+          }
 
-    //       if (error.code === 'auth/invalid-email') {
-    //         console.log('That email address is invalid!');
-    //       }
+          if (error.code === 'auth/invalid-email') {
+            Alert.alert('That email address is invalid!');
+          }
 
-    //       console.error(error);
-    //     });
-    // }
-    // else
-    // {
-    //   Alert.alert("Please write email and password");
-    // }
+          if (error.code === 'auth/invalid-credential') {
+            Alert.alert("Invalid credentials!");
+          }
+        });
+    }
+    else
+    {
+      Alert.alert("Please enter email and password");
+    }
   }
 
 
@@ -67,7 +67,7 @@ const LoginScreen = (props) => {
           style={styles.inputText}
           placeholder="Email"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={setEmail}
         />
       </View>
       <View style={styles.inputView}>
@@ -76,8 +76,8 @@ const LoginScreen = (props) => {
           style={styles.inputText}
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
+          // secureTextEntry={true}
+          onChangeText={setPassword}
         />
       </View>
       <TouchableOpacity style={styles.loginBtn} onPress={() => handleLogin(email, password)}>

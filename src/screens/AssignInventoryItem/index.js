@@ -48,6 +48,16 @@ const AssignInventoryItemsScreen = (props) => {
         toggleItemBrandListModal()
     }
 
+    const handleCheckbox1Change = () => {
+        setFromClient(true);
+        setFromThoughtWin(false);
+      };
+    
+      const handleCheckbox2Change = () => {
+        setFromClient(false);
+        setFromThoughtWin(true);
+      };
+
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -84,7 +94,7 @@ const AssignInventoryItemsScreen = (props) => {
                         disabled={false}
                         value={fromClient}
                         boxType={'square'}
-                        onValueChange={(newValue) => setFromClient(newValue)}
+                        onValueChange={handleCheckbox1Change}
                     />
 
                     <Text style={styles.textTitle}> Client </Text>
@@ -93,7 +103,7 @@ const AssignInventoryItemsScreen = (props) => {
                         disabled={false}
                         value={fromThoughtWin}
                         boxType={'square'}
-                        onValueChange={(newValue) => setFromThoughtWin(newValue)}
+                        onValueChange={handleCheckbox2Change}
                     />
 
                     <Text style={styles.textTitle}> ThoughtWin </Text>
