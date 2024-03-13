@@ -134,7 +134,6 @@ export const styles = StyleSheet.create({
         width:ms(120),
         height:ms(120),
         borderRadius:ms(60),
-        backgroundColor:'lime',
         alignSelf:'center'
       }
     

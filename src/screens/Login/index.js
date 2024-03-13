@@ -11,19 +11,14 @@ const LoginScreen = (props) => {
 
   // Handle user state changes
   function onAuthStateChanged(user) {
-
     if (user) {
       const parsedData = JSON.stringify(user);
 
       AsyncStorage.setItem("userData", parsedData);
     }
-
   }
 
   useEffect(() => {
-    AsyncStorage.getItem("userData")
-      .then((res) => console.log("TT01 login useeffect res", res))
-      .catch((err) => console.log("TT01 login useefect err", err))
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
@@ -35,7 +30,9 @@ const LoginScreen = (props) => {
       auth()
         .signInWithEmailAndPassword(email.toLowerCase(), password.toLowerCase())
         .then(() => {
-          props.navigation.navigate("Home");
+          setEmail('');
+          setPassword('')
+          props.navigation.navigate("ScreenLoader");
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -75,7 +72,7 @@ const LoginScreen = (props) => {
           style={styles.inputText}
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          // secureTextEntry={true}
+          secureTextEntry={true}
           onChangeText={setPassword}
         />
       </View>

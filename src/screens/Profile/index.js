@@ -1,32 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ms } from '../../utils/scaling-utils';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-export const ProfileScreen = (props) => {
+export const ProfileScreen = () => {
+
+    const navigation = useNavigation();
 
     const [userEmail, setUserEmail] = useState('');
 
     const logout = () => {
 
         auth().signOut()
-          .then(() => {
-            // Sign-out successful.
-            props.navigation.reset({
-                index: 0,
-                routes: [{ name: 'Login' }],
+            .then(() => {
+                // Sign-out successful.
+                AsyncStorage.removeItem("userData");
+                navigation.navigate("Login");
+            })
+            .catch((error) => {
+                // An error happened.
+                Alert.alert('Something went wrong!', error);
             });
-           AsyncStorage.removeItem("userData");
-
-          })
-          .catch((error) => {
-            // An error happened.
-            Alert.alert('Something went wrong!',err);
-            console.error('Error signing out:', error);
-          });
     };
 
     useEffect(() => {
