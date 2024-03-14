@@ -1,4 +1,4 @@
-import { ClientListComponent } from "./ClientListComponent";
+import {ClientListComponent} from './clientListComponent'
 import { InventoryItemListComponent } from "./InventoryItemListComponent";
 import { ItemCompanyListComponent } from "./ItemCompanyListComponent";
 import { UserListComponent } from "./UserListComponent";

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "138029493731",
+    "project_id": "twims-a8bba",
+    "storage_bucket": "twims-a8bba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138029493731:android:1513a74152fd15dbc584d6",
+        "android_client_info": {
+          "package_name": "com.twims"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs9uRNYKAB9OiMt6z2zZK9o5knLcGuSuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
