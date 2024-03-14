@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import Modal from "react-native-modal";
-import { InventoryItemListComponent, ClientListComponent, ItemCompanyListComponent, DropdownListComponent } from '../../components';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { DropdownListComponent } from '../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import { ms } from '../../utils/scaling-utils';
+import { Colors } from '../../constants';
 
 const AssignInventoryItemsScreen = (props) => {
 
-    const [isModalVisible, setModalVisible] = useState(false);
+    const [isItemModalVisible, setIsItemModalVisible] = useState(false);
     const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);
     const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
@@ -20,42 +20,34 @@ const AssignInventoryItemsScreen = (props) => {
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [projectOwner, setProjectOwner] = useState('');
+    const [employeeId, setEmployeeId] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [itemId, setItemId] = useState('');
+    const [itemBrandId, setItemBrandId] = useState('');
+    const [clientId, setClientId] = useState('');
 
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
+
+    const toggleModal = (item) => {
+        setIsItemModalVisible(item === 'Other');
+        setSelectedItem(item);
     };
 
-    const toggleClientListModal = () => {
-        setIsClientListModalVisible(!isClientListModalVisible)
+    const toggleClientListModal = (item) => {
+        setIsClientListModalVisible(item === 'Other');
+        setSelectedClient(item);
     };
 
-    const toggleItemBrandListModal = () => {
-        setIsBrandListModalVisible(!isBrandListModalVisible)
+    const toggleItemBrandListModal = (item) => {
+        setIsBrandListModalVisible(item === 'Other');
+        setSelectedItemBrandName(item);
     };
 
     const toggleProjectOwnerModal = (item) => {
-
-        console.log("TT01 toggleProjectOwnerModal called", item);
-
         setIsAddProOwnerModalVisible(item === 'Other');
         setProjectOwner(item);
 
     };
-
-    // const selectItem = (item) => {
-    //     setSelectedItem(item);
-    //     toggleModal()
-    // }
-
-    const selectClientItemData = (item) => {
-        setSelectedClient(item);
-        toggleClientListModal()
-    }
-
-    const selectItemBrandName = (item) => {
-        setSelectedItemBrandName(item);
-        toggleItemBrandListModal()
-    }
 
     const handleCheckbox1Change = () => {
         setFromClient(!fromClient);
@@ -106,19 +98,9 @@ const AssignInventoryItemsScreen = (props) => {
         { label: 'Other', value: '6' }
     ];
 
-    console.log("TT01 selected item is", selectedItem);
-    console.log("TT01 selected brand name is", selectedItemBrandName);
-    console.log("TT01 selected client item is", selectedClient);
-    console.log("TT01 selected owneritem is", projectOwner);
-
-
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
-                {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={ms(27)} color="#000" />
-                </TouchableOpacity> */}
-
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextStyle}>Assign Inventory Items</Text>
                 </View>
@@ -126,23 +108,12 @@ const AssignInventoryItemsScreen = (props) => {
             <View style={styles.separatorStyle} />
 
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                {/* <View style={styles.secondaryContainer}>
-                    <TouchableOpacity style={styles.itemContainer} onPress={() => toggleModal()}>
-                        <Text style={styles.selectItemTextStyle}>{selectedItem ? selectedItem : 'Select Item'}</Text>
-                        <AntDesign name="right" size={ms(20)} color="#000" />
-                    </TouchableOpacity>
-                </View>
-
-                {renderLabel()} */}
-
-                <DropdownListComponent data={itemListdata} selectedItem={setSelectedItem} />
+                <DropdownListComponent data={itemListdata} selectedItem={toggleModal} />
 
                 <View style={styles.checkBoxContainer}>
                     <Text style={styles.textTitle}> Item Brand Name :</Text>
-                    <TouchableOpacity style={styles.brandNameContainer} onPress={() => toggleItemBrandListModal()}>
-                        {/* <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
-                        <AntDesign name="down" size={20} color="#000" /> */}
-                        <DropdownListComponent data={brandListdata} selectedItem={setSelectedItemBrandName} />
+                    <TouchableOpacity style={styles.brandNameContainer}>
+                        <DropdownListComponent data={brandListdata} selectedItem={toggleItemBrandListModal} />
                     </TouchableOpacity>
                 </View>
 
@@ -169,30 +140,36 @@ const AssignInventoryItemsScreen = (props) => {
 
                 {fromClient &&
                     <View style={styles.secondaryContainer}>
-                        {/* <TouchableOpacity style={styles.itemContainer} onPress={() => toggleClientListModal()}> */}
-                        {/* <Text style={styles.selectItemTextStyle}>{selectedClient ? selectedClient : 'Select Client'}</Text>
-                            <AntDesign name="right" size={20} color="#000" /> */}
-                        <DropdownListComponent data={clientListdata} selectedItem={setSelectedClient} />
-
-                        {/* </TouchableOpacity> */}
+                        <DropdownListComponent data={clientListdata} selectedItem={toggleClientListModal} />
                     </View>
                 }
 
-                <Modal isVisible={isModalVisible}>
+                <Modal isVisible={isItemModalVisible}>
                     <View style={styles.modalContainer}>
-                        <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => toggleModal()}>
-                            <AntDesign name="closecircleo" size={ms(27)} color="#000" />
+                        <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => setIsItemModalVisible(false)}>
+                            <AntDesign name="closecircleo" size={ms(27)} color={Colors.black} />
                         </TouchableOpacity>
                         <View style={styles.modalHeaderSeparator} />
 
                         <View style={styles.modalSecondaryContainer}>
-                            <Text style={styles.projOwnerTextStyle}> New Item Name :</Text>
+                            <Text style={styles.projOwnerTextStyle}>Item Id :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={itemId}
+                                    placeholder="Enter item Id"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setItemId}
+                                />
+                            </View>
+
+                            <Text style={styles.projOwnerTextStyle}> Item Name :</Text>
                             <View style={styles.inputContainerStyle}>
                                 <TextInput
                                     style={styles.inputText}
                                     value={selectedItem}
-                                    placeholder="Enter Item Name"
-                                    placeholderTextColor="#003f5c"
+                                    placeholder="Enter item name"
+                                    placeholderTextColor={Colors.gray}
                                     onChangeText={(text) => setSelectedItem(text)}
                                 />
                             </View>
@@ -207,19 +184,30 @@ const AssignInventoryItemsScreen = (props) => {
                 <Modal isVisible={isClientListModalVisible}>
                     <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => toggleClientListModal()}>
-                            <AntDesign name="closecircleo" size={30} color="#000" />
+                            <AntDesign name="closecircleo" size={30} color={Colors.black} />
                         </TouchableOpacity>
                         <View style={styles.modalHeaderSeparator} />
 
                         <View style={styles.modalSecondaryContainer}>
-                            <Text style={styles.projOwnerTextStyle}>New Client Name :</Text>
+                            <Text style={styles.projOwnerTextStyle}>Client Id :</Text>
                             <View style={styles.inputContainerStyle}>
                                 <TextInput
                                     style={styles.inputText}
-                                    // value={}
-                                    placeholder="Enter Client Name"
-                                    placeholderTextColor="#003f5c"
-                                    onChangeText={(text) => setProjectOwner(text)}
+                                    value={clientId}
+                                    placeholder="Enter client id"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setClientId}
+                                />
+                            </View>
+
+                            <Text style={styles.projOwnerTextStyle}>Client Name :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={selectedClient}
+                                    placeholder="Enter client name"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setSelectedClient}
                                 />
                             </View>
 
@@ -233,30 +221,93 @@ const AssignInventoryItemsScreen = (props) => {
                 <Modal isVisible={isBrandListModalVisible}>
                     <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => toggleItemBrandListModal()}>
-                            <AntDesign name="closecircleo" size={30} color="#000" />
+                            <AntDesign name="closecircleo" size={30} color={Colors.black} />
                         </TouchableOpacity>
                         <View style={styles.modalHeaderSeparator} />
 
-                        <ItemCompanyListComponent selectedItem={selectItemBrandName} />
+                        <View style={styles.modalSecondaryContainer}>
+                            <Text style={styles.projOwnerTextStyle}>Item Brand Id :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={itemBrandId}
+                                    placeholder="Enter item brand id"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setItemBrandId}
+                                />
+                            </View>
+
+                            <Text style={styles.projOwnerTextStyle}>Item Brand Name :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={selectedItemBrandName}
+                                    placeholder="Enter item brand name"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setSelectedItemBrandName}
+                                />
+                            </View>
+
+                            <TouchableOpacity style={styles.addBtn} >
+                                <Text style={styles.saveText}>Add</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
                 </Modal>
 
                 <Modal isVisible={isAddProOwnerModalVisible}>
                     <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.modalHeaderContainer} onPress={() => setIsAddProOwnerModalVisible(false)}>
-                            <AntDesign name="closecircleo" size={30} color="#000" />
+                            <AntDesign name="closecircleo" size={30} color={Colors.black} />
                         </TouchableOpacity>
                         <View style={styles.modalHeaderSeparator} />
 
                         <View style={styles.modalSecondaryContainer}>
+
+                            <Text style={styles.projOwnerTextStyle}>Employee Id :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={employeeId}
+                                    placeholder="Enter employee id"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setEmployeeId}
+                                />
+                            </View>
+
                             <Text style={styles.projOwnerTextStyle}>Project Owner Name :</Text>
                             <View style={styles.inputContainerStyle}>
                                 <TextInput
                                     style={styles.inputText}
                                     value={projectOwner}
-                                    placeholder="Enter Owner Name"
-                                    placeholderTextColor="#003f5c"
-                                    onChangeText={(text) => setProjectOwner(text)}
+                                    placeholder="Enter owner name"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setProjectOwner}
+                                />
+                            </View>
+
+
+
+                            <Text style={styles.projOwnerTextStyle}>Email :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={email}
+                                    placeholder="Enter email"
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setEmail}
+                                />
+                            </View>
+
+                            <Text style={styles.projOwnerTextStyle}>Phone No. :</Text>
+                            <View style={styles.inputContainerStyle}>
+                                <TextInput
+                                    style={styles.inputText}
+                                    value={phone}
+                                    placeholder="Enter Phone no."
+                                    placeholderTextColor={Colors.gray}
+                                    onChangeText={setPhone}
                                 />
                             </View>
 
@@ -272,13 +323,6 @@ const AssignInventoryItemsScreen = (props) => {
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner : </Text>
                     <View style={styles.inputView}>
-                        {/* <TextInput
-                            style={styles.inputText}
-                            value={projectOwner}
-                            placeholder="Enter Owner Name"
-                            placeholderTextColor="#003f5c"
-                            onChangeText={(text) => setProjectOwner(text)}
-                        /> */}
                         <DropdownListComponent data={employeeListData} selectedItem={(item) => toggleProjectOwnerModal(item)} />
                     </View>
                 </View>
@@ -289,7 +333,7 @@ const AssignInventoryItemsScreen = (props) => {
 
             </ScrollView>
 
-        </SafeAreaView>
+        </SafeAreaView >
 
     )
 }
