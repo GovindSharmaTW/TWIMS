@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
         color:Colors.primary,
         fontSize:Fonts.large,
         textAlign:'center',
-        marginBottom:ms(10)
+        marginVertical:ms(10)
     },
     baseContainer:{
        flex:1

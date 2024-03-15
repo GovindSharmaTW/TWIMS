@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import Modal from "react-native-modal";
@@ -7,6 +7,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
+import database from '@react-native-firebase/database';
+import { addNewBrandName, addNewClient, addNewEmployee, addNewItem } from '../../services/firebase';
 
 const AssignInventoryItemsScreen = (props) => {
 
@@ -98,6 +100,44 @@ const AssignInventoryItemsScreen = (props) => {
         { label: 'Other', value: '6' }
     ];
 
+    useEffect(() => {
+
+        database()
+            .ref('/Employee')
+            .once('value')
+            .then(snapshot => {
+                console.log('User data: ', snapshot.val());
+            });
+    }, [])
+
+    const handleEmployeeData = () => {
+        console.log("handleEmployeeData function called",addNewEmployee(employeeId, projectOwner, email, phone));
+
+        // if (addNewEmployee(employeeId, projectOwner, email, phone) === 'success') {
+        //     setEmployeeId('');
+        //     setProjectOwner('');
+        //     setEmail('');
+        //     setPhone('');
+        //     setIsAddProOwnerModalVisible(false);
+        // }
+        // else {
+        //     alert('Something went wrong');
+        // }
+
+    }
+
+    const saveNewItem = () => {
+        console.log("saveNewItem function called",addNewItem(itemId, selectedItem));
+    }
+
+    const saveNewBrandName = () => {
+        console.log("saveNewItem function called",addNewBrandName(itemBrandId, selectedItemBrandName));
+    }
+
+    const saveNewClient = () => {
+        console.log("saveNewItem function called",addNewClient(clientId, selectedClient));
+    }
+
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
@@ -174,7 +214,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} >
+                            <TouchableOpacity style={styles.addBtn} onPress={()=> saveNewItem()}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -211,7 +251,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} >
+                            <TouchableOpacity style={styles.addBtn} onPress={()=>saveNewClient()} >
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -248,7 +288,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} >
+                            <TouchableOpacity style={styles.addBtn} onPress={()=> saveNewBrandName()}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -311,7 +351,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} >
+                            <TouchableOpacity style={styles.addBtn} onPress={() => handleEmployeeData()}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>

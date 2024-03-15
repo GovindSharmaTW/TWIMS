@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
         color:Colors.primary,
         fontSize:Fonts.large,
         textAlign:'center',
-        marginBottom:ms(10)
+        marginVertical:ms(10)
     },
     selectItemTextStyle:{
         color:Colors.primary,
@@ -73,7 +73,7 @@ export const styles = StyleSheet.create({
     },
     headerContainer :{ 
         flexDirection: 'row', 
-        paddingHorizontal: '2%',
+        paddingHorizontal: '2%'
     },
     checkBoxContainer :{ 
         flexDirection: 'row',
