@@ -109,3 +109,38 @@ export const addNewClient = (clientId, clientName) => {
         }
     })
 }
+
+export const addAssignedInventoryItemDetail = (...data) => {
+
+    const [selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner] = data;
+
+    return new Promise((resolve, reject) => {
+
+        const newReference = database().ref('/AssignedInventoryDetails').push();
+
+        if (selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner) {
+
+            newReference
+                .set({
+                    item: selectedItem,
+                    itemBrandName: selectedItemBrandName,
+                    fromClient: fromClient,
+                    fromToughhtwin: fromThoughtWin,
+                    clientName: selectedClient,
+                    projectOwnerName: projectOwner
+                }).then(() => {
+                    alert('Assigned inventory data added successfully');
+                    resolve('success');
+                }).catch((err) => {
+                    alert('Someting went wrong', err);
+                    resolve('failure')
+                })
+        }
+        else {
+
+            alert('Please insert valid data !');
+            resolve('failure');
+
+        }
+    })
+}

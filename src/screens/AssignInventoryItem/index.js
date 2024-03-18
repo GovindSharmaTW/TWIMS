@@ -8,7 +8,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
 import database from '@react-native-firebase/database';
-import { addNewBrandName, addNewClient, addNewEmployee, addNewItem } from '../../services/firebase';
+import { addAssignedInventoryItemDetail, addNewBrandName, addNewClient, addNewEmployee, addNewItem } from '../../services/firebase';
 
 const AssignInventoryItemsScreen = (props) => {
 
@@ -32,7 +32,8 @@ const AssignInventoryItemsScreen = (props) => {
     const [brandListData, setBrandListData] = useState([]);
     const [clientListData, setClientListData] = useState([]);
     const [employeeListData, setEmployeeListData] = useState([]);
-
+    const [disableSaveButton, setDisableSaveButton] = useState(false);
+    const [disableAddButton, setDisableAddButton] = useState(false);
 
     const toggleModal = (item) => {
         setIsItemModalVisible(item === 'Other');
@@ -146,6 +147,9 @@ const AssignInventoryItemsScreen = (props) => {
 
 
     const handleEmployeeData = async () => {
+
+        setDisableAddButton(true);
+
         const res = await addNewEmployee(employeeId, projectOwner, email, phone);
 
         if (res === 'success') {
@@ -153,47 +157,85 @@ const AssignInventoryItemsScreen = (props) => {
             setEmail('');
             setPhone('');
             setIsAddProOwnerModalVisible(false);
+            setDisableAddButton(false);
         }
         else {
             alert('Something went wrong');
+            setDisableAddButton(false);
         }
 
     }
 
     const saveNewItem = async () => {
+        setDisableAddButton(true);
+
         const res = await addNewItem(itemId, selectedItem);
 
         if (res === 'success') {
 
             setItemId('');
             setIsItemModalVisible(false);
+            setDisableAddButton(false);
         }
         else {
             alert('Something went wrong');
+            setDisableAddButton(false);
         }
     }
 
     const saveNewBrandName = async () => {
+
+        setDisableAddButton(true);
+
         const res = await addNewBrandName(itemBrandId, selectedItemBrandName);
 
         if (res === 'success') {
             setItemBrandId('');
             setIsBrandListModalVisible(false);
+            setDisableAddButton(false);
         }
         else {
             alert('Something went wrong');
+            setDisableAddButton(false);
+
         }
     }
 
     const saveNewClient = async () => {
+        setDisableAddButton(true);
+
         const res = await addNewClient(clientId, selectedClient);
 
         if (res === 'success') {
             setClientId('');
             setIsClientListModalVisible(false);
+            setDisableAddButton(false);
         }
         else {
             alert('Something went wrong');
+            setDisableAddButton(false);
+        }
+    }
+
+
+    const saveAssignedInventoryDetails = async () => {
+
+        setDisableSaveButton(true);
+
+        const res = await addAssignedInventoryItemDetail(selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner);
+
+        if (res === 'success') {
+            setSelectedItem(null);
+            setSelectedItemBrandName(null);
+            setFromClient(false);
+            setFromThoughtWin(false);
+            setSelectedClient(null);
+            setProjectOwner('');
+            setDisableSaveButton(false);
+        }
+        else {
+            alert('Something went wrong');
+            setDisableSaveButton(false);
         }
     }
 
@@ -273,7 +315,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewItem()}>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewItem()} disabled={disableAddButton}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -310,7 +352,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewClient()} >
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewClient()} disabled={disableAddButton}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -347,7 +389,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewBrandName()}>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewBrandName()} disabled={disableAddButton}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -410,7 +452,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={() => handleEmployeeData()}>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => handleEmployeeData()} disabled={disableAddButton}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -426,7 +468,7 @@ const AssignInventoryItemsScreen = (props) => {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.saveBtn} >
+                <TouchableOpacity style={styles.saveBtn} onPress={() => saveAssignedInventoryDetails()} disabled={disableSaveButton}>
                     <Text style={styles.saveText}>Save Data</Text>
                 </TouchableOpacity>
 
