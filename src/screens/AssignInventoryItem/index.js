@@ -110,32 +110,56 @@ const AssignInventoryItemsScreen = (props) => {
             });
     }, [])
 
-    const handleEmployeeData = () => {
-        console.log("handleEmployeeData function called",addNewEmployee(employeeId, projectOwner, email, phone));
+    const handleEmployeeData = async () => {
+        const res = await addNewEmployee(employeeId, projectOwner, email, phone);
 
-        // if (addNewEmployee(employeeId, projectOwner, email, phone) === 'success') {
-        //     setEmployeeId('');
-        //     setProjectOwner('');
-        //     setEmail('');
-        //     setPhone('');
-        //     setIsAddProOwnerModalVisible(false);
-        // }
-        // else {
-        //     alert('Something went wrong');
-        // }
+        if (res === 'success') {
+            setEmployeeId('');
+            setEmail('');
+            setPhone('');
+            setIsAddProOwnerModalVisible(false);
+        }
+        else {
+            alert('Something went wrong');
+        }
 
     }
 
-    const saveNewItem = () => {
-        console.log("saveNewItem function called",addNewItem(itemId, selectedItem));
+    const saveNewItem = async () => {
+        const res = await addNewItem(itemId, selectedItem);
+
+        if (res === 'success') {
+
+            setItemId('');
+            setIsItemModalVisible(false);
+        }
+        else {
+            alert('Something went wrong');
+        }
     }
 
-    const saveNewBrandName = () => {
-        console.log("saveNewItem function called",addNewBrandName(itemBrandId, selectedItemBrandName));
+    const saveNewBrandName = async () => {
+        const res = await addNewBrandName(itemBrandId, selectedItemBrandName);
+
+        if (res === 'success') {
+            setItemBrandId('');
+            setIsBrandListModalVisible(false);
+        }
+        else {
+            alert('Something went wrong');
+        }
     }
 
-    const saveNewClient = () => {
-        console.log("saveNewItem function called",addNewClient(clientId, selectedClient));
+    const saveNewClient = async () => {
+        const res = await addNewClient(clientId, selectedClient);
+
+        if (res === 'success') {
+            setClientId('');
+            setIsClientListModalVisible(false);
+        }
+        else {
+            alert('Something went wrong');
+        }
     }
 
     return (
@@ -214,7 +238,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={()=> saveNewItem()}>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewItem()}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -251,7 +275,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={()=>saveNewClient()} >
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewClient()} >
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -288,7 +312,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.addBtn} onPress={()=> saveNewBrandName()}>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => saveNewBrandName()}>
                                 <Text style={styles.saveText}>Add</Text>
                             </TouchableOpacity>
                         </View>
@@ -316,7 +340,7 @@ const AssignInventoryItemsScreen = (props) => {
                                 />
                             </View>
 
-                            <Text style={styles.projOwnerTextStyle}>Project Owner Name :</Text>
+                            <Text style={styles.projOwnerTextStyle}>Name :</Text>
                             <View style={styles.inputContainerStyle}>
                                 <TextInput
                                     style={styles.inputText}
