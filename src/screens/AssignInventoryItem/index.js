@@ -28,6 +28,10 @@ const AssignInventoryItemsScreen = (props) => {
     const [itemId, setItemId] = useState('');
     const [itemBrandId, setItemBrandId] = useState('');
     const [clientId, setClientId] = useState('');
+    const [itemListData, setItemListData] = useState([]);
+    const [brandListData, setBrandListData] = useState([]);
+    const [clientListData, setClientListData] = useState([]);
+    const [employeeListData, setEmployeeListData] = useState([]);
 
 
     const toggleModal = (item) => {
@@ -61,54 +65,85 @@ const AssignInventoryItemsScreen = (props) => {
         setFromThoughtWin(true);
     };
 
-    const itemListdata = [
-        { label: 'Laptop', value: '1' },
-        { label: 'Keyboard', value: '2' },
-        { label: 'Mouse', value: '3' },
-        { label: 'Connector', value: '4' },
-        { label: 'Headphone', value: '5' },
-        { label: 'Charger', value: '6' },
-        { label: 'Other', value: '7' }
-
-    ];
-
-    const brandListdata = [
-        { label: 'Avita', value: '1' },
-        { label: 'Asus', value: '2' },
-        { label: 'Apple Macbook Pro', value: '3' },
-        { label: 'Apple Macbook Air', value: '4' },
-        { label: 'Lenovo', value: '5' },
-        { label: 'HP', value: '6' },
-        { label: 'Other', value: '7' }
-    ];
-
-    const clientListdata = [
-        { label: 'Microsoft', value: '1' },
-        { label: 'Apna Sweets', value: '2' },
-        { label: 'JMD', value: '3' },
-        { label: 'ThoughtWin', value: '4' },
-        { label: 'PlateRate', value: '5' },
-        { label: 'Other', value: '6' }
-    ];
-
-    const employeeListData = [
-        { label: 'Govind Sharma', value: '1' },
-        { label: 'Pranav Onkar', value: '2' },
-        { label: 'Ajay Singh', value: '3' },
-        { label: 'Neeraj Pathak', value: '4' },
-        { label: 'Adhish Birthaliya', value: '5' },
-        { label: 'Other', value: '6' }
-    ];
 
     useEffect(() => {
+        const employeeRef = database().ref('/Employee');
 
-        database()
-            .ref('/Employee')
-            .once('value')
-            .then(snapshot => {
-                console.log('User data: ', snapshot.val());
+        const unsubscribeEmployee = employeeRef.on('value', snapshot => {
+
+            const data = snapshot.val();
+
+            const tempData = Object.keys(data).map((key, index) => {
+                return { label: data[key].name, value: data[key].empId };
             });
-    }, [])
+
+            if (tempData.length === Object.keys(data).length) {
+                tempData.push({ label: 'Other', value: 'T001' });
+            }
+
+            setEmployeeListData(tempData);
+        });
+
+        const clientsRef = database().ref('/Clients');
+
+        const unsubscribeClients = clientsRef.on('value', snapshot => {
+
+            const data = snapshot.val();
+
+            const tempData = Object.keys(data).map((key, index) => {
+                return { label: data[key].clientName, value: data[key].clientId };
+            });
+
+            if (tempData.length === Object.keys(data).length) {
+                tempData.push({ label: 'Other', value: 'T001' });
+            }
+
+            setClientListData(tempData);
+
+        });
+
+        const inventoryItemsRef = database().ref('/InventoryItems');
+
+        const unsubscribeInventoryItems = inventoryItemsRef.on('value', snapshot => {
+
+            const data = snapshot.val();
+
+            const tempData = Object.keys(data).map((key, index) => {
+                return { label: data[key].itemName, value: data[key].itemId };
+            });
+
+            if (tempData.length === Object.keys(data).length) {
+                tempData.push({ label: 'Other', value: 'T001' });
+            }
+
+            setItemListData(tempData);
+        });
+
+        const brandNameRef = database().ref('/InventoryItemBrandName');
+
+        const unsubscribeBrandName = brandNameRef.on('value', snapshot => {
+            const data = snapshot.val();
+
+            const tempData = Object.keys(data).map((key, index) => {
+                return { label: data[key].brandName, value: data[key].brandId };
+            });
+
+            if (tempData.length === Object.keys(data).length) {
+                tempData.push({ label: 'Other', value: 'T001' });
+            }
+
+            setBrandListData(tempData);
+        });
+
+        return () => {
+            unsubscribeEmployee();
+            unsubscribeClients();
+            unsubscribeInventoryItems();
+            unsubscribeBrandName();
+
+        }
+    }, []);
+
 
     const handleEmployeeData = async () => {
         const res = await addNewEmployee(employeeId, projectOwner, email, phone);
@@ -172,12 +207,12 @@ const AssignInventoryItemsScreen = (props) => {
             <View style={styles.separatorStyle} />
 
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                <DropdownListComponent data={itemListdata} selectedItem={toggleModal} />
+                <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
 
                 <View style={styles.checkBoxContainer}>
                     <Text style={styles.textTitle}> Item Brand Name :</Text>
                     <TouchableOpacity style={styles.brandNameContainer}>
-                        <DropdownListComponent data={brandListdata} selectedItem={toggleItemBrandListModal} />
+                        <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} />
                     </TouchableOpacity>
                 </View>
 
@@ -204,7 +239,7 @@ const AssignInventoryItemsScreen = (props) => {
 
                 {fromClient &&
                     <View style={styles.secondaryContainer}>
-                        <DropdownListComponent data={clientListdata} selectedItem={toggleClientListModal} />
+                        <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} />
                     </View>
                 }
 

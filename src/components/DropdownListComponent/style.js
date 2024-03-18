@@ -5,7 +5,7 @@ import { ms } from "../../utils/scaling-utils";
 export const styles = StyleSheet.create({
     container: {
       backgroundColor: Colors.white,
-      padding: 16,
+      padding:ms(16)
     },
     dropdown: {
       height: ms(50),
@@ -18,17 +18,23 @@ export const styles = StyleSheet.create({
       marginRight: 20,
     },
     placeholderStyle: {
-      fontSize: 16,
+      fontSize: ms(16),
+      color:Colors.primary
     },
     selectedTextStyle: {
-      fontSize: 16,
+      fontSize: ms(16),
+      color:Colors.primary
     },
     iconStyle: {
-      width: 20,
-      height: 20,
+      width: ms(20),
+      height: ms(20)
     },
     inputSearchStyle: {
-      height: 40,
-      fontSize: 16,
+      height: ms(40),
+      fontSize: ms(16),
     },
+    emptyDataContainer:{
+      justifyContent:'center'
+    }
+
   });
