@@ -125,7 +125,7 @@ export const addAssignedInventoryItemDetail = (...data) => {
                     item: selectedItem,
                     itemBrandName: selectedItemBrandName,
                     fromClient: fromClient,
-                    fromToughhtwin: fromThoughtWin,
+                    fromThoughtWin: fromThoughtWin,
                     clientName: selectedClient,
                     projectOwnerName: projectOwner
                 }).then(() => {

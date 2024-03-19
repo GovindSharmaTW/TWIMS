@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     },
     selectItemTextStyle:{
         color:Colors.primary,
-        fontSize:Fonts.large,
+        fontSize:ms(20),
         textAlign:'center',
     },
     textTitle:{
@@ -37,14 +37,13 @@ export const styles = StyleSheet.create({
         marginBottom:'2%'
     },
     itemContainer:{
-        paddingHorizontal:'5%',
-        paddingVertical:'2%',
-        borderColor:Colors.primary,
-        borderRadius:10,
-        borderWidth:1,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
+        justifyContent:'center',
+        alignItems:'flex-start',
+        height: ms(50),
+        borderColor: Colors.gray,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: ms(12),
 
     },
     modalContainer :{ 
@@ -97,7 +96,7 @@ export const styles = StyleSheet.create({
     },
     inputView: {
         width: '50%',
-        borderColor:Colors.primary,
+        borderColor:Colors.gray,
         borderWidth:1,
         borderRadius: 10,
         height: ms(5),
@@ -111,7 +110,7 @@ export const styles = StyleSheet.create({
       brandNameContainer:{
         paddingHorizontal:'2%',
         paddingVertical:'2%',
-        borderColor:Colors.primary,
+        borderColor:Colors.gray,
         borderRadius:10,
         borderWidth:1,
         flexDirection:'row',
@@ -122,7 +121,7 @@ export const styles = StyleSheet.create({
     },
     selectItemBrandNameTextStyle:{
         color:Colors.primary,
-        fontSize:Fonts.large,
+        fontSize:ms(20),
         textAlign:'center',
         width:'80%'
     },

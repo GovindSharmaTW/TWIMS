@@ -10,7 +10,7 @@ import { Colors } from '../../constants';
 import database from '@react-native-firebase/database';
 import { addAssignedInventoryItemDetail, addNewBrandName, addNewClient, addNewEmployee, addNewItem } from '../../services/firebase';
 
-const AssignInventoryItemsScreen = (props) => {
+const AssignInventoryItemsScreen = () => {
 
     const [isItemModalVisible, setIsItemModalVisible] = useState(false);
     const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);

@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
 import { styles } from './style';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import CheckBox from '@react-native-community/checkbox';
-import { UserListComponent } from '../../components';
-import { Colors } from '../../constants/Colors';
+import { DropdownListComponent } from '../../components';
+import database from '@react-native-firebase/database';
 
-const ShowInventoryDetailsScreen = (props) => {
+const ShowInventoryDetailsScreen = () => {
 
     const [item, setItem] = useState('-');
     const [clientName, setClientName] = useState(null);
@@ -15,29 +13,55 @@ const ShowInventoryDetailsScreen = (props) => {
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('-');
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
-    const [searchText, setSearchText] = useState('');
+    const [assignedInventoryData, setAssignedInventoryData] = useState('');
 
-    const selectItem = (item) => {
-        setSearchText(null);
+    const selectItem = (selectedUser) => {
 
-        if(item)
-        {
+        const selectedUserInventoryDetails = assignedInventoryData.filter(item => item.label === selectedUser);
+
+        const item = selectedUserInventoryDetails[0];
+
+        if (item) {
             setItem(item.item);
-            setSelectedItemBrandName(item.brandName);
+            setSelectedItemBrandName(item.itemBrandName);
             setFromClient(item.fromClient);
             setFromThoughtWin(!item.fromClient);
-            setProjectOwner(item.name);
+            setProjectOwner(item.label);
             setClientName(item.clientName);
         }
     }
 
+    useEffect(() => {
+
+        const assignedInventoryRef = database().ref('/AssignedInventoryDetails');
+
+        const unsubscribeAssignedInventoryDetails = assignedInventoryRef.on('value', snapshot => {
+            const data = snapshot.val();
+
+            const tempData = Object.keys(data).map((key, index) => {
+                return {
+                    label: data[key].projectOwnerName,
+                    value: index,
+                    item: data[key].item,
+                    itemBrandName: data[key].itemBrandName,
+                    fromClient: data[key].fromClient,
+                    fromThoughtWin: data[key].fromThoughtWin,
+                    clientName: data[key].clientName
+
+                };
+            });
+
+            setAssignedInventoryData(tempData);
+
+        });
+        return () => {
+            unsubscribeAssignedInventoryDetails();
+        }
+    }, [])
+
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
-                {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={30} color="#000" />
-                </TouchableOpacity> */}
-
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextStyle}>Show Inventory Details</Text>
                 </View>
@@ -45,36 +69,20 @@ const ShowInventoryDetailsScreen = (props) => {
             <View style={styles.separatorStyle} />
 
             <ScrollView style={styles.scrollViewStyle} bounces={false}>
-                <View style={styles.container}>
-                    <Feather name="search" size={24} color={Colors.primary} style={styles.icon} />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Search"
-                        placeholderTextColor="#aaa"
-                        value={searchText}
-                        onChangeText={setSearchText}
-                    />
 
-                </View>
-
-                {searchText &&
-                    <View style={styles.userListContainer}>
-                        <UserListComponent searchTerm={searchText} selectedItem={selectItem} />
-                    </View>
-                }
-
+                <DropdownListComponent data={assignedInventoryData} selectedItem={selectItem} />
 
                 <View style={styles.secondaryContainer}>
-                    <TouchableOpacity style={styles.itemContainer} >
+                    <View style={styles.itemContainer} >
                         <Text style={styles.selectItemTextStyle}>{item}</Text>
-                    </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View style={styles.checkBoxContainer}>
                     <Text style={styles.textTitle}> Item Brand Name : </Text>
-                    <TouchableOpacity style={styles.brandNameContainer} >
+                    <View style={styles.brandNameContainer} >
                         <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
-                    </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View style={styles.checkBoxContainer}>
@@ -100,9 +108,9 @@ const ShowInventoryDetailsScreen = (props) => {
 
                 {fromClient &&
                     <View style={styles.secondaryContainer}>
-                        <TouchableOpacity style={styles.itemContainer} >
+                        <View style={styles.itemContainer} >
                             <Text style={styles.selectItemTextStyle}>{clientName}</Text>
-                        </TouchableOpacity>
+                        </View>
                     </View>
                 }
 
