@@ -1,6 +1,7 @@
 import database from '@react-native-firebase/database';
 
-export const addNewEmployee = (employeeId, projectOwner, email, phone) => {
+export const addNewEmployee = (data) => {
+    const { employeeId, projectOwner, email, phone } = data;
 
     return new Promise((resolve, reject) => {
 
@@ -27,17 +28,19 @@ export const addNewEmployee = (employeeId, projectOwner, email, phone) => {
     })
 }
 
-export const addNewItem = (itemId, itemName) => {
+export const addNewItem = (data) => {
+
+    const { itemId, selectedItem } = data;
 
     return new Promise((resolve, reject) => {
 
         const newReference = database().ref('/InventoryItems').push();
 
-        if (itemId, itemName) {
+        if (itemId, selectedItem) {
             newReference
                 .set({
                     itemId: itemId,
-                    itemName: itemName
+                    itemName: selectedItem
                 }).then(() => {
                     alert('New item added successfully');
                     resolve('success');
@@ -53,18 +56,20 @@ export const addNewItem = (itemId, itemName) => {
     })
 }
 
-export const addNewBrandName = (brandId, brandName) => {
+export const addNewBrandName = (data) => {
+
+    const { itemBrandId, selectedItemBrandName } = data;
 
     return new Promise((resolve, reject) => {
 
         const newReference = database().ref('/InventoryItemBrandName').push();
 
-        if (brandId, brandName) {
+        if (itemBrandId, selectedItemBrandName) {
 
             newReference
                 .set({
-                    brandId: brandId,
-                    brandName: brandName
+                    brandId: itemBrandId,
+                    brandName: selectedItemBrandName
                 }).then(() => {
                     alert('New brand name added successfully');
                     resolve('success');
@@ -81,18 +86,20 @@ export const addNewBrandName = (brandId, brandName) => {
     })
 }
 
-export const addNewClient = (clientId, clientName) => {
+export const addNewClient = (data) => {
+
+    const { clientId, selectedClient } = data;
 
     return new Promise((resolve, reject) => {
 
         const newReference = database().ref('/Clients').push();
 
-        if (clientId, clientName) {
+        if (clientId, selectedClient) {
 
             newReference
                 .set({
                     clientId: clientId,
-                    clientName: clientName
+                    clientName: selectedClient
                 }).then(() => {
                     alert('New client added successfully');
                     resolve('success');
@@ -110,9 +117,9 @@ export const addNewClient = (clientId, clientName) => {
     })
 }
 
-export const addAssignedInventoryItemDetail = (...data) => {
+export const addAssignedInventoryItemDetail = (data) => {
 
-    const [selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner] = data;
+    const { selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner } = data;
 
     return new Promise((resolve, reject) => {
 

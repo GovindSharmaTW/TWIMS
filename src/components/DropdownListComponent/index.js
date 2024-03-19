@@ -4,13 +4,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { styles } from './style';
 import { Colors } from '../../constants';
 
-export const DropdownListComponent = ({ data, selectedItem }) => {
+export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
 
     return (
-
+        
         <View>
             {data.length > 0 ?
                 <Dropdown
@@ -24,7 +24,7 @@ export const DropdownListComponent = ({ data, selectedItem }) => {
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
-                    placeholder={!isFocus ? 'Select item' : '...'}
+                    placeholder={!isFocus ? placeholder : '...'}
                     searchPlaceholder="Search..."
                     value={value}
                     onFocus={() => setIsFocus(true)}

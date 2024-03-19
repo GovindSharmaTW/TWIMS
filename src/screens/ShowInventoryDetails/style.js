@@ -43,8 +43,7 @@ export const styles = StyleSheet.create({
         borderColor: Colors.gray,
         borderWidth: 1,
         borderRadius: 8,
-        paddingHorizontal: ms(12),
-
+        paddingHorizontal: ms(12)
     },
     modalContainer :{ 
         backgroundColor: Colors.white, 
@@ -108,7 +107,6 @@ export const styles = StyleSheet.create({
         fontSize:ms(20)
       },
       brandNameContainer:{
-        paddingHorizontal:'2%',
         paddingVertical:'2%',
         borderColor:Colors.gray,
         borderRadius:10,
@@ -116,13 +114,12 @@ export const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         alignItems:'center',
-        width:'45%'
-
+        width:'45%',
+        paddingHorizontal: ms(12)
     },
     selectItemBrandNameTextStyle:{
         color:Colors.primary,
         fontSize:ms(20),
-        textAlign:'center',
         width:'80%'
     },
     userListContainer:{ 

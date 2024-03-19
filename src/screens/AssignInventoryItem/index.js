@@ -74,15 +74,21 @@ const AssignInventoryItemsScreen = () => {
 
             const data = snapshot.val();
 
-            const tempData = Object.keys(data).map((key, index) => {
-                return { label: data[key].name, value: data[key].empId };
-            });
+            if (data === null) {
 
-            if (tempData.length === Object.keys(data).length) {
-                tempData.push({ label: 'Other', value: 'T001' });
+                setEmployeeListData([{ label: 'Other', value: 'T001' }]);
             }
+            else {
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].name, value: data[key].empId };
+                });
 
-            setEmployeeListData(tempData);
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setEmployeeListData(tempData);
+            }
         });
 
         const clientsRef = database().ref('/Clients');
@@ -91,15 +97,20 @@ const AssignInventoryItemsScreen = () => {
 
             const data = snapshot.val();
 
-            const tempData = Object.keys(data).map((key, index) => {
-                return { label: data[key].clientName, value: data[key].clientId };
-            });
-
-            if (tempData.length === Object.keys(data).length) {
-                tempData.push({ label: 'Other', value: 'T001' });
+            if (data === null) {
+                setClientListData([{ label: 'Other', value: 'T001' }]);
             }
+            else {
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].clientName, value: data[key].clientId };
+                });
 
-            setClientListData(tempData);
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setClientListData(tempData);
+            }
 
         });
 
@@ -109,15 +120,20 @@ const AssignInventoryItemsScreen = () => {
 
             const data = snapshot.val();
 
-            const tempData = Object.keys(data).map((key, index) => {
-                return { label: data[key].itemName, value: data[key].itemId };
-            });
-
-            if (tempData.length === Object.keys(data).length) {
-                tempData.push({ label: 'Other', value: 'T001' });
+            if (data === null) {
+                setItemListData([{ label: 'Other', value: 'T001' }]);
             }
+            else {
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].itemName, value: data[key].itemId };
+                });
 
-            setItemListData(tempData);
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setItemListData(tempData);
+            }
         });
 
         const brandNameRef = database().ref('/InventoryItemBrandName');
@@ -125,15 +141,19 @@ const AssignInventoryItemsScreen = () => {
         const unsubscribeBrandName = brandNameRef.on('value', snapshot => {
             const data = snapshot.val();
 
-            const tempData = Object.keys(data).map((key, index) => {
-                return { label: data[key].brandName, value: data[key].brandId };
-            });
-
-            if (tempData.length === Object.keys(data).length) {
-                tempData.push({ label: 'Other', value: 'T001' });
+            if (data === null) {
+                setBrandListData([{ label: 'Other', value: 'T001' }]);
             }
+            else {
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].brandName, value: data[key].brandId };
+                });
 
-            setBrandListData(tempData);
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+                setBrandListData(tempData);
+            }
         });
 
         return () => {
@@ -150,7 +170,9 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const res = await addNewEmployee(employeeId, projectOwner, email, phone);
+        const params = { employeeId, projectOwner, email, phone };
+
+        const res = await addNewEmployee(params);
 
         if (res === 'success') {
             setEmployeeId('');
@@ -167,9 +189,12 @@ const AssignInventoryItemsScreen = () => {
     }
 
     const saveNewItem = async () => {
+
         setDisableAddButton(true);
 
-        const res = await addNewItem(itemId, selectedItem);
+        const params = { itemId, selectedItem };
+
+        const res = await addNewItem(params);
 
         if (res === 'success') {
 
@@ -187,7 +212,9 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const res = await addNewBrandName(itemBrandId, selectedItemBrandName);
+        const params = { itemBrandId, selectedItemBrandName }
+
+        const res = await addNewBrandName(params);
 
         if (res === 'success') {
             setItemBrandId('');
@@ -202,9 +229,12 @@ const AssignInventoryItemsScreen = () => {
     }
 
     const saveNewClient = async () => {
-        setDisableAddButton(true);
 
-        const res = await addNewClient(clientId, selectedClient);
+        setDisableAddButton(true);
+        
+        const params = { clientId, selectedClient };
+
+        const res = await addNewClient(params);
 
         if (res === 'success') {
             setClientId('');
@@ -222,7 +252,9 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableSaveButton(true);
 
-        const res = await addAssignedInventoryItemDetail(selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner);
+        const params = { selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner };
+
+        const res = await addAssignedInventoryItemDetail(params);
 
         if (res === 'success') {
             setSelectedItem(null);

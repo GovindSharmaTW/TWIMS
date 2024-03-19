@@ -38,21 +38,21 @@ const ShowInventoryDetailsScreen = () => {
         const unsubscribeAssignedInventoryDetails = assignedInventoryRef.on('value', snapshot => {
             const data = snapshot.val();
 
-            const tempData = Object.keys(data).map((key, index) => {
-                return {
-                    label: data[key].projectOwnerName,
-                    value: index,
-                    item: data[key].item,
-                    itemBrandName: data[key].itemBrandName,
-                    fromClient: data[key].fromClient,
-                    fromThoughtWin: data[key].fromThoughtWin,
-                    clientName: data[key].clientName
+            if (data) {
+                const tempData = Object.keys(data).map((key, index) => {
+                    return {
+                        label: data[key].projectOwnerName,
+                        value: index,
+                        item: data[key].item,
+                        itemBrandName: data[key].itemBrandName,
+                        fromClient: data[key].fromClient,
+                        fromThoughtWin: data[key].fromThoughtWin,
+                        clientName: data[key].clientName
+                    };
+                });
 
-                };
-            });
-
-            setAssignedInventoryData(tempData);
-
+                setAssignedInventoryData(tempData);
+            }
         });
         return () => {
             unsubscribeAssignedInventoryDetails();
@@ -70,7 +70,7 @@ const ShowInventoryDetailsScreen = () => {
 
             <ScrollView style={styles.scrollViewStyle} bounces={false}>
 
-                <DropdownListComponent data={assignedInventoryData} selectedItem={selectItem} />
+                <DropdownListComponent data={assignedInventoryData} selectedItem={selectItem} placeholder={'Select project owner'} />
 
                 <View style={styles.secondaryContainer}>
                     <View style={styles.itemContainer} >
