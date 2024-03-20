@@ -4,7 +4,7 @@ import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
-import { addAssignedInventoryItemDetail, addNewBrandName, addNewClient, addNewEmployee, addNewItem } from '../../services/firebase';
+import { addNewData } from '../../services/firebase';
 
 const AssignInventoryItemsScreen = () => {
 
@@ -166,9 +166,19 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const params = { employeeId, projectOwner, email, phone };
+        const data =
+        {
+            empId: employeeId,
+            name: projectOwner,
+            email: email,
+            phone: phone
+        }
 
-        const res = await addNewEmployee(params);
+        const type = 'addEmployee';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
 
         if (res === 'success') {
             setEmployeeId('');
@@ -188,12 +198,18 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const params = { itemId, selectedItem };
+        const data = {
+            itemId: itemId,
+            itemName: selectedItem
+        };
 
-        const res = await addNewItem(params);
+        const type = 'addItem';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
 
         if (res === 'success') {
-
             setItemId('');
             setIsItemModalVisible(false);
             setDisableAddButton(false);
@@ -208,9 +224,17 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const params = { itemBrandId, selectedItemBrandName }
+        const data =
+        {
+            brandId: itemBrandId,
+            brandName: selectedItemBrandName
+        };
 
-        const res = await addNewBrandName(params);
+        const type = 'addItemBrandName';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
 
         if (res === 'success') {
             setItemBrandId('');
@@ -228,9 +252,16 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableAddButton(true);
 
-        const params = { clientId, selectedClient };
+        const type = 'addClient';
 
-        const res = await addNewClient(params);
+        const data = { 
+            clientId: clientId,
+            clientName: selectedClient
+        };
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
 
         if (res === 'success') {
             setClientId('');
@@ -248,9 +279,20 @@ const AssignInventoryItemsScreen = () => {
 
         setDisableSaveButton(true);
 
-        const params = { selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner };
+        const data = {
+            item: selectedItem,
+            itemBrandName: selectedItemBrandName,
+            fromClient: fromClient,
+            fromThoughtWin: fromThoughtWin,
+            clientName: selectedClient,
+            projectOwnerName: projectOwner
+        }
 
-        const res = await addAssignedInventoryItemDetail(params);
+        const type = 'addAssignedItemsData';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
 
         if (res === 'success') {
             setSelectedItem(null);
