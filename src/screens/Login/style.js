@@ -24,8 +24,10 @@ export const styles = StyleSheet.create({
       borderRadius: 25,
       height: ms(50),
       marginBottom: ms(20),
-      justifyContent: 'center',
-      padding: ms(20),
+      justifyContent: 'space-between',
+      paddingHorizontal: ms(25),
+      flexDirection:'row',
+      alignItems:'center'
     },
     inputText: {
       height: ms(50),

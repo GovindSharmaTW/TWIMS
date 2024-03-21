@@ -1,34 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
 import { styles } from './style';
-import CheckBox from '@react-native-community/checkbox';
 import { DropdownListComponent } from '../../components';
 import database from '@react-native-firebase/database';
-
 const ShowInventoryDetailsScreen = () => {
 
-    const [item, setItem] = useState('-');
-    const [clientName, setClientName] = useState(null);
-    const [projectOwner, setProjectOwner] = useState('-');
-    const [selectedItemBrandName, setSelectedItemBrandName] = useState('-');
-    const [fromClient, setFromClient] = useState(false);
-    const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [assignedInventoryData, setAssignedInventoryData] = useState('');
+    const [tableData, setTableData] = useState([]);
+
 
     const selectItem = (selectedUser) => {
 
         const selectedUserInventoryDetails = assignedInventoryData.filter(item => item.label === selectedUser);
 
-        const item = selectedUserInventoryDetails[0];
-
-        if (item) {
-            setItem(item.item);
-            setSelectedItemBrandName(item.itemBrandName);
-            setFromClient(item.fromClient);
-            setFromThoughtWin(!item.fromClient);
-            setProjectOwner(item.label);
-            setClientName(item.clientName);
-        }
+        setTableData(selectedUserInventoryDetails);
     }
 
     useEffect(() => {
@@ -59,6 +44,36 @@ const ShowInventoryDetailsScreen = () => {
         }
     }, [])
 
+    const renderItem = ({ item }) => {
+        return (
+            <View style={styles.row}>
+                <Text style={styles.cell}>{item.label}</Text>
+                <Text style={styles.cell}>{item.item}</Text>
+                <Text style={styles.cell}>{item.itemBrandName}</Text>
+                <Text style={styles.cell}>{item.fromClient.toString()}</Text>
+                <Text style={styles.cell}>{item.clientName || '-'}</Text>
+            </View>
+        )
+    }
+
+    const headerComponent = () => {
+        return (
+            <View style={styles.header}>
+                <Text style={styles.headerCell}>Pro.Owner</Text>
+                <Text style={styles.headerCell}>Item</Text>
+                <Text style={styles.headerCell}>ItemBrandName</Text>
+                <Text style={styles.headerCell}>FromClient</Text>
+                <Text style={styles.headerCell}>ClientName</Text>
+            </View>
+        )
+
+    }
+
+    const ListEmptyComponent = () => {
+        return (
+            <Text style={styles.textTitle}>No Data Found</Text>
+        )
+    }
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
@@ -72,60 +87,17 @@ const ShowInventoryDetailsScreen = () => {
 
                 <DropdownListComponent data={assignedInventoryData} selectedItem={selectItem} placeholder={'Select project owner'} />
 
-                <View style={styles.secondaryContainer}>
-                    <View style={styles.itemContainer} >
-                        <Text style={styles.selectItemTextStyle}>{item}</Text>
-                    </View>
-                </View>
 
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}> Item Brand Name : </Text>
-                    <View style={styles.brandNameContainer} >
-                        <Text numberOfLines={1} style={styles.selectItemBrandNameTextStyle}>{selectedItemBrandName ? selectedItemBrandName : 'Select Brand'}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>From :</Text>
-                    <CheckBox
-                        disabled={true}
-                        value={fromClient}
-                        boxType={'square'}
-                        onValueChange={(newValue) => setFromClient(newValue)}
+                <View style={styles.tableContainer}>
+                    <FlatList
+                        data={tableData}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.value}
+                        ListHeaderComponent={headerComponent}
+                        ListEmptyComponent={ListEmptyComponent}
                     />
-
-                    <Text style={styles.textTitle}> Client </Text>
-
-                    <CheckBox
-                        disabled={true}
-                        value={fromThoughtWin}
-                        boxType={'square'}
-                        onValueChange={(newValue) => setFromThoughtWin(newValue)}
-                    />
-
-                    <Text style={styles.textTitle}> ThoughtWin </Text>
                 </View>
 
-                {fromClient &&
-                    <View style={styles.secondaryContainer}>
-                        <View style={styles.itemContainer} >
-                            <Text style={styles.selectItemTextStyle}>{clientName}</Text>
-                        </View>
-                    </View>
-                }
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Project Owner : </Text>
-                    <View style={styles.inputView}>
-                        <TextInput
-                            style={styles.inputText}
-                            editable={false}
-                            value={projectOwner}
-                            placeholder=""
-                            placeholderTextColor="#003f5c"
-                        />
-                    </View>
-                </View>
 
             </ScrollView>
 

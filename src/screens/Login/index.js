@@ -3,11 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { styles } from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Feather from 'react-native-vector-icons/Feather';
+import { ms } from '../../utils/scaling-utils';
+import { Colors } from '../../constants';
 
 const LoginScreen = (props) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
 
   // Handle user state changes
   function onAuthStateChanged(user) {
@@ -72,9 +76,12 @@ const LoginScreen = (props) => {
           style={styles.inputText}
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          secureTextEntry={true}
+          secureTextEntry={showPassword}
           onChangeText={setPassword}
         />
+        <TouchableOpacity onPress={()=>setShowPassword(!showPassword)}>
+          <Feather name= {showPassword ?  'eye-off' : "eye"} size={ms(15)} color={Colors.black} />
+        </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.loginBtn} onPress={() => handleLogin(email, password)}>
         <Text style={styles.loginText}>LOGIN</Text>

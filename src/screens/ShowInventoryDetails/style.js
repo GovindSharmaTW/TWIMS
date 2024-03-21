@@ -17,9 +17,10 @@ export const styles = StyleSheet.create({
     textTitle:{
         color:Colors.primary,
         fontSize:Fonts.large,
+        textAlign: 'center'
     },
     baseContainer:{
-       flex:1,
+        flex:1,
     },
     secondaryContainer :{
         marginTop:'7%'
@@ -45,28 +46,28 @@ export const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: ms(12)
     },
-    modalContainer :{ 
-        backgroundColor: Colors.white, 
-        borderRadius: 10, 
-        paddingVertical: '5%' 
+    modalContainer :{
+        backgroundColor: Colors.white,
+        borderRadius: 10,
+        paddingVertical: '5%'
     },
-    modalHeaderContainer:{ 
-        marginHorizontal: '4%', 
-        marginBottom: '4%' 
+    modalHeaderContainer:{
+        marginHorizontal: '4%',
+        marginBottom: '4%'
     },
-    headerContainer :{ 
-        flexDirection: 'row', 
+    headerContainer :{
+        flexDirection: 'row',
         paddingHorizontal: '2%',
     },
-    checkBoxContainer :{ 
+    checkBoxContainer :{
         flexDirection: 'row',
         justifyContent:'space-between',
         paddingTop:'7%',
         alignItems:'center',
     },
-    scrollViewStyle:{ 
+    scrollViewStyle:{
         padding: '3%',
-        paddingVertical:'5%' 
+        paddingVertical:'5%'
     },
     container: {
         flexDirection: 'row',
@@ -77,17 +78,17 @@ export const styles = StyleSheet.create({
         borderWidth:1,
         paddingHorizontal: ms(10),
         marginTop: ms(10),
-      },
-      icon: {
+    },
+    icon: {
         marginRight: ms(10),
-      },
-      input: {
+    },
+    input: {
         flex: 1,
         paddingVertical: ms(10),
         fontSize: ms(16),
         color: '#333',
-      },
-      inputContainer :{ 
+    },
+    inputContainer :{
         flexDirection: 'row',
         justifyContent:'space-between',
         paddingVertical:'7%',
@@ -101,12 +102,12 @@ export const styles = StyleSheet.create({
         height: ms(5),
         justifyContent: 'center',
         padding: ms(20),
-      },
-      inputText: {
+    },
+    inputText: {
         color: Colors.primary,
         fontSize:ms(20)
-      },
-      brandNameContainer:{
+    },
+    brandNameContainer:{
         paddingVertical:'2%',
         borderColor:Colors.gray,
         borderRadius:10,
@@ -122,18 +123,45 @@ export const styles = StyleSheet.create({
         fontSize:ms(20),
         width:'80%'
     },
-    userListContainer:{ 
-        borderBottomLeftRadius: 10, 
-        borderBottomRightRadius: 10, 
-        maxHeight: ms(160), 
-        borderWidth: 1, 
-        borderColor: Colors.primary, 
-        position: 'absolute', 
-        zIndex: 1000, 
-        top: ms(50), 
-        backgroundColor: Colors.white, 
+    userListContainer:{
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        maxHeight: ms(160),
+        borderWidth: 1,
+        borderColor: Colors.primary,
+        position: 'absolute',
+        zIndex: 1000,
+        top: ms(50),
+        backgroundColor: Colors.white,
         paddingVertical:ms(10),
         width:'100%'
+    },
+    header: {
+        flexDirection: 'row',
+        backgroundColor: '#f2f2f2',
+        paddingVertical: ms(10),
+        justifyContent: 'space-between'
+    },
+    headerCell: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: Colors.primary,
+        flex: 1,
+        fontSize: ms(12)
+    },
+    row: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
+        paddingVertical: ms(10),
+        fontSize: ms(10)
+    },
+    cell: {
+        flex: 1,
+        textAlign: 'center'
+    },
+    tableContainer: {
+        marginVertical: ms(10)
     }
-    
+
 })
