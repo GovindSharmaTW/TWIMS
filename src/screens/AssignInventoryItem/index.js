@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
@@ -254,7 +254,7 @@ const AssignInventoryItemsScreen = () => {
 
         const type = 'addClient';
 
-        const data = { 
+        const data = {
             clientId: clientId,
             clientName: selectedClient
         };
@@ -413,6 +413,39 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
+    const getModalChildComponent = useMemo(() => {
+
+        if (isItemModalVisible) {
+            return addItemModalChildComponent();
+        }
+        else if (isBrandListModalVisible) {
+            return addBrandModalChildComponent();
+        }
+        else if (isClientListModalVisible) {
+            return addClientModalChildComponent()
+        }
+        else if (isAddProOwnerModalVisible) {
+            return addEmployeeModalChildComponent();
+        }
+    }, [isItemModalVisible, isBrandListModalVisible, isClientListModalVisible, isAddProOwnerModalVisible])
+
+    const handleModalClose = () => {
+
+        if (isItemModalVisible) {
+            setIsItemModalVisible(false);
+        }
+        else if (isBrandListModalVisible) {
+            setIsBrandListModalVisible(false);
+
+        }
+        else if (isClientListModalVisible) {
+            setIsClientListModalVisible(false);
+        }
+        else if (isAddProOwnerModalVisible) {
+            setIsAddProOwnerModalVisible(false);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
@@ -459,25 +492,7 @@ const AssignInventoryItemsScreen = () => {
                     </View>
                 }
 
-                {
-                    isItemModalVisible &&
-                    <ModalComponent isVisible={isItemModalVisible} childComponent={addItemModalChildComponent()} closeModal={() => setIsItemModalVisible(false)} />
-                }
-
-                {
-                    isClientListModalVisible &&
-                    <ModalComponent isVisible={isClientListModalVisible} childComponent={addClientModalChildComponent()} closeModal={() => setIsClientListModalVisible(false)} />
-                }
-
-                {
-                    isBrandListModalVisible &&
-                    <ModalComponent isVisible={isBrandListModalVisible} childComponent={addBrandModalChildComponent()} closeModal={() => setIsBrandListModalVisible(false)} />
-                }
-
-                {
-                    isAddProOwnerModalVisible &&
-                    <ModalComponent isVisible={isAddProOwnerModalVisible} childComponent={addEmployeeModalChildComponent()} closeModal={() => setIsAddProOwnerModalVisible(false)} />
-                }
+                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible} childComponent={getModalChildComponent} closeModal={() => handleModalClose()} />
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner : </Text>
