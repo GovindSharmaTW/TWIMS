@@ -1,5 +1,5 @@
 import { ClientListComponent } from './clientListComponent'
-import { InventoryItemListComponent } from "./InventoryItemListComponent";
+import { CardListComponent } from "./CardListComponent";
 import { ItemCompanyListComponent } from "./ItemCompanyListComponent";
 import { UserListComponent } from "./UserListComponent";
 import { DropdownListComponent } from "./DropdownListComponent";
@@ -8,7 +8,7 @@ import { ModalComponent } from './ModalComponent';
 
 export {
     ClientListComponent,
-    InventoryItemListComponent,
+    CardListComponent,
     ItemCompanyListComponent,
     UserListComponent,
     DropdownListComponent,

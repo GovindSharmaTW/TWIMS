@@ -160,7 +160,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center'
     },
-    tableContainer: {
+    cardListContainer: {
         marginVertical: ms(10)
     }
 
