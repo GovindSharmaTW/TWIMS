@@ -6,6 +6,7 @@ import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
 import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
+import { checkIsEmpty } from '../../utils';
 
 const AssignInventoryItemsScreen = () => {
 
@@ -32,7 +33,6 @@ const AssignInventoryItemsScreen = () => {
     const [disableAddButton, setDisableAddButton] = useState(false);
 
     const toggleModal = (item) => {
-        console.log("TT01 toggle Modal calling",item);
         setIsItemModalVisible(item === 'Other');
         setSelectedItem(item);
     };
@@ -77,14 +77,12 @@ const AssignInventoryItemsScreen = () => {
 
             const data = snapshot?.val();
 
-            console.log("data is",data);
 
             if (data === null || data === undefined) {
 
                 setDeveloperListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
-                console.log("TT01 data is", data);
 
                 const tempData = Object.keys(data).map(key => {
                     return { label: data[key].name, value: data[key].empId };
@@ -174,7 +172,6 @@ const AssignInventoryItemsScreen = () => {
                 setProjectOwnerListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
-                console.log("TT01 data is", data);
 
                 const tempData = Object.keys(data).map(key => {
                     return { label: data[key].name, value: data[key].empId };
@@ -201,178 +198,200 @@ const AssignInventoryItemsScreen = () => {
 
     const saveNewDeveloperData = async () => {
 
-        setDisableAddButton(true);
+        if (checkIsEmpty(developer, email, phone)) {
+            setDisableAddButton(true);
 
-        const data =
-        {
-            name: developer,
-            email: email,
-            phone: phone
-        }
+            const data =
+            {
+                name: developer,
+                email: email,
+                phone: phone
+            }
 
-        console.log("TT01 add developer data before sending",data);
+            const type = 'addDeveloper';
 
-        const type = 'addDeveloper';
+            const params = { data, type };
 
-        const params = { data, type };
+            const res = await addNewData(params);
 
-        const res = await addNewData(params);
-
-        if (res === 'success') {
-            setEmail('');
-            setPhone('');
-            setIsAddDeveloperModalVisible(false);
-            setDisableAddButton(false);
+            if (res === 'success') {
+                setEmail('');
+                setPhone('');
+                setIsAddDeveloperModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableAddButton(false);
+            alert("Please insert valid data !");
         }
-
     }
 
     const saveNewProjectOwnerData = async () => {
 
-        setDisableAddButton(true);
+        if (checkIsEmpty(projectOwner, email, phone)) {
+            setDisableAddButton(true);
 
-        const data =
-        {
-            name: projectOwner,
-            email: email,
-            phone: phone
-        }
+            const data =
+            {
+                name: projectOwner,
+                email: email,
+                phone: phone
+            }
 
-        console.log("TT01 data before sending ", data);
+            const type = 'addProjectOwner';
 
-        const type = 'addProjectOwner';
+            const params = { data, type };
 
-        const params = { data, type };
+            const res = await addNewData(params);
 
-        const res = await addNewData(params);
-
-        if (res === 'success') {
-            setEmail('');
-            setPhone('');
-            setIsAddProOwnerModalVisible(false);
-            setDisableAddButton(false);
+            if (res === 'success') {
+                setEmail('');
+                setPhone('');
+                setIsAddProOwnerModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableAddButton(false);
+            alert("Please insert valid data !");
         }
-
     }
 
     const saveNewItem = async () => {
 
-        console.log('save new item called',selectedItem);
+        if (checkIsEmpty(selectedItem) && selectedItem !== 'Other') {
 
-        setDisableAddButton(true);
+            setDisableAddButton(true);
 
-        const data = {
-            itemName: selectedItem
-        };
+            const data = {
+                itemName: selectedItem
+            };
 
-        const type = 'addItem';
+            const type = 'addItem';
 
-        const params = { data, type };
+            const params = { data, type };
 
-        const res = await addNewData(params);
+            const res = await addNewData(params);
 
-        console.log("TT01 response after new item add",res);
 
-        if (res === 'success') {
-            setIsItemModalVisible(false);
-            setDisableAddButton(false);
+            if (res === 'success') {
+                setIsItemModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableAddButton(false);
+            alert("Please insert valid data !");
         }
     }
 
     const saveNewBrandName = async () => {
 
-        setDisableAddButton(true);
+        if (checkIsEmpty(selectedItemBrandName) && selectedItemBrandName !== 'Other') {
+            setDisableAddButton(true);
 
-        const data =
-        {
-            brandName: selectedItemBrandName
-        };
+            const data =
+            {
+                brandName: selectedItemBrandName
+            };
 
-        const type = 'addItemBrandName';
+            const type = 'addItemBrandName';
 
-        const params = { data, type };
+            const params = { data, type };
 
-        const res = await addNewData(params);
+            const res = await addNewData(params);
 
-        if (res === 'success') {
-            setIsBrandListModalVisible(false);
-            setDisableAddButton(false);
+            if (res === 'success') {
+                setIsBrandListModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableAddButton(false);
+            alert("Please insert valid data !");
         }
     }
 
     const saveNewClient = async () => {
 
-        setDisableAddButton(true);
+        if (checkIsEmpty(selectedClient) && selectedClient !== 'Other') {
+            setDisableAddButton(true);
 
-        const type = 'addClient';
+            const type = 'addClient';
 
-        const data = {
-            clientName: selectedClient
-        };
+            const data = {
+                clientName: selectedClient
+            };
 
-        const params = { data, type };
+            const params = { data, type };
 
-        const res = await addNewData(params);
+            const res = await addNewData(params);
 
-        if (res === 'success') {
-            setIsClientListModalVisible(false);
-            setDisableAddButton(false);
+            if (res === 'success') {
+                setIsClientListModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableAddButton(false);
+            alert("Please insert valid data !");
         }
     }
 
 
     const saveAssignedInventoryDetails = async () => {
 
-        setDisableSaveButton(true);
+        if (checkIsEmpty(selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner, developer)) {
+            setDisableSaveButton(true);
 
-        const data = {
-            item: selectedItem,
-            itemBrandName: selectedItemBrandName,
-            fromClient: fromClient,
-            fromThoughtWin: fromThoughtWin,
-            clientName: selectedClient,
-            projectOwnerName: projectOwner,
-            developer : developer
-        }
+            const data = {
+                item: selectedItem,
+                itemBrandName: selectedItemBrandName,
+                fromClient: fromClient,
+                fromThoughtWin: fromThoughtWin,
+                clientName: selectedClient,
+                projectOwnerName: projectOwner,
+                developer: developer
+            }
 
-        const type = 'addAssignedItemsData';
+            const type = 'addAssignedItemsData';
 
-        const params = { data, type };
+            const params = { data, type };
 
-        const res = await addNewData(params);
+            const res = await addNewData(params);
 
-        if (res === 'success') {
-            setSelectedItem(null);
-            setSelectedItemBrandName(null);
-            setFromClient(false);
-            setFromThoughtWin(false);
-            setSelectedClient(null);
-            setProjectOwner('');
-            setDisableSaveButton(false);
+            if (res === 'success') {
+                setSelectedItem(null);
+                setSelectedItemBrandName(null);
+                setFromClient(false);
+                setFromThoughtWin(false);
+                setSelectedClient(null);
+                setProjectOwner('');
+                setDisableSaveButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableSaveButton(false);
+            }
         }
         else {
-            alert('Something went wrong');
-            setDisableSaveButton(false);
+            alert("Please insert valid data !");
         }
     }
 
@@ -385,14 +404,13 @@ const AssignInventoryItemsScreen = () => {
                     placeholderText="Enter item name"
                 />
 
-                <TouchableOpacity style={styles.addBtn} onPress={() => saveNewItem()} disabled={disableAddButton}>
+                <TouchableOpacity style={styles.addBtn} onPress={saveNewItem} disabled={disableAddButton}>
                     <Text style={styles.saveText}>Add</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
-    console.log('TT01 selectedItem is',selectedItem);
 
     const addClientModalChildComponent = () => {
         return (
@@ -455,7 +473,6 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
-    console.log("TT01 ",projectOwner,email,phone);
 
     const addDeveloperModalChildComponent = () => {
         return (
@@ -485,8 +502,7 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
-    const getModalChildComponent = useMemo(() => {
-console.log("calling===")
+    const getModalChildComponent = () => {
         if (isItemModalVisible) {
             return addItemModalChildComponent();
         }
@@ -496,13 +512,13 @@ console.log("calling===")
         else if (isClientListModalVisible) {
             return addClientModalChildComponent()
         }
-        else if (isAddProOwnerModalVisible ) {
+        else if (isAddProOwnerModalVisible) {
             return addProjectOwnerModalChildComponent();
         }
         else if (isAddDeveloperModalVisible) {
             return addDeveloperModalChildComponent();
         }
-    }, [isItemModalVisible, isBrandListModalVisible, isClientListModalVisible, isAddProOwnerModalVisible, isAddDeveloperModalVisible])
+    }
 
     const handleModalClose = () => {
 
@@ -537,7 +553,7 @@ console.log("calling===")
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Item :</Text>
                     <View style={styles.inputView}>
-                    <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
+                        <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
                     </View>
                 </View>
 
@@ -578,7 +594,7 @@ console.log("calling===")
                     </View>
                 }
 
-                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible} childComponent={getModalChildComponent} closeModal={() => handleModalClose()} />
+                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner :</Text>
