@@ -6,7 +6,7 @@ import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
 import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
-import { checkIsEmpty } from '../../utils';
+import { checkIsEmpty, getCurrentDate } from '../../utils';
 
 const AssignInventoryItemsScreen = () => {
 
@@ -15,9 +15,9 @@ const AssignInventoryItemsScreen = () => {
     const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
     const [isAddDeveloperModalVisible, setIsAddDeveloperModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [selectedClient, setSelectedClient] = useState(null);
-    const [selectedItemBrandName, setSelectedItemBrandName] = useState(null);
+    const [selectedItem, setSelectedItem] = useState('');
+    const [selectedClient, setSelectedClient] = useState('');
+    const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [projectOwner, setProjectOwner] = useState('');
@@ -357,7 +357,7 @@ const AssignInventoryItemsScreen = () => {
 
     const saveAssignedInventoryDetails = async () => {
 
-        if (checkIsEmpty(selectedItem, selectedItemBrandName, fromClient, fromThoughtWin, selectedClient, projectOwner, developer)) {
+        if (checkIsEmpty(selectedItem, selectedItemBrandName, selectedClient, projectOwner, developer)) {
             setDisableSaveButton(true);
 
             const data = {
@@ -367,7 +367,8 @@ const AssignInventoryItemsScreen = () => {
                 fromThoughtWin: fromThoughtWin,
                 clientName: selectedClient,
                 projectOwnerName: projectOwner,
-                developer: developer
+                developer: developer,
+                assignedDate : getCurrentDate()
             }
 
             const type = 'addAssignedItemsData';
@@ -377,11 +378,11 @@ const AssignInventoryItemsScreen = () => {
             const res = await addNewData(params);
 
             if (res === 'success') {
-                setSelectedItem(null);
-                setSelectedItemBrandName(null);
+                setSelectedItem('');
+                setSelectedItemBrandName('');
                 setFromClient(false);
                 setFromThoughtWin(false);
-                setSelectedClient(null);
+                setSelectedClient('');
                 setProjectOwner('');
                 setDisableSaveButton(false);
             }
