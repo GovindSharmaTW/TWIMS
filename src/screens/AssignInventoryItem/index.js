@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
+import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
 
 const AssignInventoryItemsScreen = () => {
 
@@ -12,26 +13,26 @@ const AssignInventoryItemsScreen = () => {
     const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);
     const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
+    const [isAddDeveloperModalVisible, setIsAddDeveloperModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedItemBrandName, setSelectedItemBrandName] = useState(null);
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [projectOwner, setProjectOwner] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
+    const [developer, setDeveloper] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [itemId, setItemId] = useState('');
-    const [itemBrandId, setItemBrandId] = useState('');
-    const [clientId, setClientId] = useState('');
     const [itemListData, setItemListData] = useState([]);
     const [brandListData, setBrandListData] = useState([]);
     const [clientListData, setClientListData] = useState([]);
-    const [employeeListData, setEmployeeListData] = useState([]);
+    const [developerListData, setDeveloperListData] = useState([]);
+    const [projectOwnerListData, setProjectOwnerListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
 
     const toggleModal = (item) => {
+        console.log("TT01 toggle Modal calling",item);
         setIsItemModalVisible(item === 'Other');
         setSelectedItem(item);
     };
@@ -52,6 +53,12 @@ const AssignInventoryItemsScreen = () => {
 
     };
 
+    const toggleDeveloperModal = (item) => {
+        setIsAddDeveloperModalVisible(item === 'Other');
+        setDeveloper(item);
+
+    };
+
     const handleCheckbox1Change = () => {
         setFromClient(!fromClient);
         setFromThoughtWin(false);
@@ -64,17 +71,21 @@ const AssignInventoryItemsScreen = () => {
 
 
     useEffect(() => {
-        const employeeRef = database().ref('/Employee');
+        const developersRef = database().ref(developerRef);
 
-        const unsubscribeEmployee = employeeRef.on('value', snapshot => {
+        const unsubscribeDeveloper = developersRef.on('value', snapshot => {
 
-            const data = snapshot.val();
+            const data = snapshot?.val();
 
-            if (data === null) {
+            console.log("data is",data);
 
-                setEmployeeListData([{ label: 'Other', value: 'T001' }]);
+            if (data === null || data === undefined) {
+
+                setDeveloperListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
+                console.log("TT01 data is", data);
+
                 const tempData = Object.keys(data).map(key => {
                     return { label: data[key].name, value: data[key].empId };
                 });
@@ -83,17 +94,17 @@ const AssignInventoryItemsScreen = () => {
                     tempData.push({ label: 'Other', value: 'T001' });
                 }
 
-                setEmployeeListData(tempData);
+                setDeveloperListData(tempData);
             }
         });
 
-        const clientsRef = database().ref('/Clients');
+        const clientRef = database().ref(clientsRef);
 
-        const unsubscribeClients = clientsRef.on('value', snapshot => {
+        const unsubscribeClient = clientRef.on('value', snapshot => {
 
-            const data = snapshot.val();
+            const data = snapshot?.val();
 
-            if (data === null) {
+            if (data === null || data === undefined) {
                 setClientListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
@@ -110,13 +121,13 @@ const AssignInventoryItemsScreen = () => {
 
         });
 
-        const inventoryItemsRef = database().ref('/InventoryItems');
+        const inventoryItemRef = database().ref(inventoryItemsRef);
 
-        const unsubscribeInventoryItems = inventoryItemsRef.on('value', snapshot => {
+        const unsubscribeInventoryItem = inventoryItemRef.on('value', snapshot => {
 
-            const data = snapshot.val();
+            const data = snapshot?.val();
 
-            if (data === null) {
+            if (data === null || data === undefined) {
                 setItemListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
@@ -132,12 +143,12 @@ const AssignInventoryItemsScreen = () => {
             }
         });
 
-        const brandNameRef = database().ref('/InventoryItemBrandName');
+        const brandNameRef = database().ref(inventoryItemsBrandNameRef);
 
         const unsubscribeBrandName = brandNameRef.on('value', snapshot => {
-            const data = snapshot.val();
+            const data = snapshot?.val();
 
-            if (data === null) {
+            if (data === null || data === undefined) {
                 setBrandListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
@@ -152,36 +163,94 @@ const AssignInventoryItemsScreen = () => {
             }
         });
 
+        const projectOwnersRef = database().ref(projectOwnerRef);
+
+        const unsubscribeProOwner = projectOwnersRef.on('value', snapshot => {
+
+            const data = snapshot?.val();
+
+            if (data === null || data === undefined) {
+
+                setProjectOwnerListData([{ label: 'Other', value: 'T001' }]);
+            }
+            else {
+                console.log("TT01 data is", data);
+
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].name, value: data[key].empId };
+                });
+
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setProjectOwnerListData(tempData);
+            }
+        });
+
         return () => {
-            unsubscribeEmployee();
-            unsubscribeClients();
-            unsubscribeInventoryItems();
+            unsubscribeProOwner();
+            unsubscribeDeveloper();
+            unsubscribeClient();
+            unsubscribeInventoryItem();
             unsubscribeBrandName();
 
         }
     }, []);
 
 
-    const handleEmployeeData = async () => {
+    const saveNewDeveloperData = async () => {
 
         setDisableAddButton(true);
 
         const data =
         {
-            empId: employeeId,
-            name: projectOwner,
+            name: developer,
             email: email,
             phone: phone
         }
 
-        const type = 'addEmployee';
+        console.log("TT01 add developer data before sending",data);
+
+        const type = 'addDeveloper';
 
         const params = { data, type };
 
         const res = await addNewData(params);
 
         if (res === 'success') {
-            setEmployeeId('');
+            setEmail('');
+            setPhone('');
+            setIsAddDeveloperModalVisible(false);
+            setDisableAddButton(false);
+        }
+        else {
+            alert('Something went wrong');
+            setDisableAddButton(false);
+        }
+
+    }
+
+    const saveNewProjectOwnerData = async () => {
+
+        setDisableAddButton(true);
+
+        const data =
+        {
+            name: projectOwner,
+            email: email,
+            phone: phone
+        }
+
+        console.log("TT01 data before sending ", data);
+
+        const type = 'addProjectOwner';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
+
+        if (res === 'success') {
             setEmail('');
             setPhone('');
             setIsAddProOwnerModalVisible(false);
@@ -196,10 +265,11 @@ const AssignInventoryItemsScreen = () => {
 
     const saveNewItem = async () => {
 
+        console.log('save new item called',selectedItem);
+
         setDisableAddButton(true);
 
         const data = {
-            itemId: itemId,
             itemName: selectedItem
         };
 
@@ -209,8 +279,9 @@ const AssignInventoryItemsScreen = () => {
 
         const res = await addNewData(params);
 
+        console.log("TT01 response after new item add",res);
+
         if (res === 'success') {
-            setItemId('');
             setIsItemModalVisible(false);
             setDisableAddButton(false);
         }
@@ -226,7 +297,6 @@ const AssignInventoryItemsScreen = () => {
 
         const data =
         {
-            brandId: itemBrandId,
             brandName: selectedItemBrandName
         };
 
@@ -237,14 +307,12 @@ const AssignInventoryItemsScreen = () => {
         const res = await addNewData(params);
 
         if (res === 'success') {
-            setItemBrandId('');
             setIsBrandListModalVisible(false);
             setDisableAddButton(false);
         }
         else {
             alert('Something went wrong');
             setDisableAddButton(false);
-
         }
     }
 
@@ -255,7 +323,6 @@ const AssignInventoryItemsScreen = () => {
         const type = 'addClient';
 
         const data = {
-            clientId: clientId,
             clientName: selectedClient
         };
 
@@ -264,7 +331,6 @@ const AssignInventoryItemsScreen = () => {
         const res = await addNewData(params);
 
         if (res === 'success') {
-            setClientId('');
             setIsClientListModalVisible(false);
             setDisableAddButton(false);
         }
@@ -285,7 +351,8 @@ const AssignInventoryItemsScreen = () => {
             fromClient: fromClient,
             fromThoughtWin: fromThoughtWin,
             clientName: selectedClient,
-            projectOwnerName: projectOwner
+            projectOwnerName: projectOwner,
+            developer : developer
         }
 
         const type = 'addAssignedItemsData';
@@ -312,13 +379,6 @@ const AssignInventoryItemsScreen = () => {
     const addItemModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
-                <Text style={styles.projOwnerTextStyle}>Item Id :</Text>
-
-                <InputText
-                    onChangeText={setItemId}
-                    placeholderText="Enter item id"
-                />
-
                 <Text style={styles.projOwnerTextStyle}> Item Name :</Text>
                 <InputText
                     onChangeText={setSelectedItem}
@@ -332,16 +392,11 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
+    console.log('TT01 selectedItem is',selectedItem);
+
     const addClientModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
-                <Text style={styles.projOwnerTextStyle}>Client Id :</Text>
-
-                <InputText
-                    onChangeText={setClientId}
-                    placeholderText="Enter client id"
-                />
-
                 <Text style={styles.projOwnerTextStyle}>Client Name :</Text>
                 <InputText
                     onChangeText={setSelectedClient}
@@ -359,12 +414,6 @@ const AssignInventoryItemsScreen = () => {
     const addBrandModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
-                <Text style={styles.projOwnerTextStyle}>Item Brand Id :</Text>
-                <InputText
-                    onChangeText={setItemBrandId}
-                    placeholderText="Enter item brand id"
-                />
-
                 <Text style={styles.projOwnerTextStyle}>Item Brand Name :</Text>
                 <InputText
                     onChangeText={setSelectedItemBrandName}
@@ -378,20 +427,13 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
-    const addEmployeeModalChildComponent = () => {
+    const addProjectOwnerModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
-
-                <Text style={styles.projOwnerTextStyle}>Employee Id :</Text>
-                <InputText
-                    onChangeText={setEmployeeId}
-                    placeholderText="Enter employee id"
-                />
-
                 <Text style={styles.projOwnerTextStyle}>Name :</Text>
                 <InputText
                     onChangeText={setProjectOwner}
-                    placeholderText="Enter name"
+                    placeholderText="Enter project owner name"
                 />
 
                 <Text style={styles.projOwnerTextStyle}>Email :</Text>
@@ -406,7 +448,37 @@ const AssignInventoryItemsScreen = () => {
                     placeholderText="Enter Phone no."
                 />
 
-                <TouchableOpacity style={styles.addBtn} onPress={() => handleEmployeeData()} disabled={disableAddButton}>
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveNewProjectOwnerData()} disabled={disableAddButton}>
+                    <Text style={styles.saveText}>Add</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    console.log("TT01 ",projectOwner,email,phone);
+
+    const addDeveloperModalChildComponent = () => {
+        return (
+            <View style={styles.modalSecondaryContainer}>
+                <Text style={styles.projOwnerTextStyle}>Name :</Text>
+                <InputText
+                    onChangeText={setDeveloper}
+                    placeholderText="Enter developer name"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Email :</Text>
+                <InputText
+                    onChangeText={setEmail}
+                    placeholderText="Enter email"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Phone No. :</Text>
+                <InputText
+                    onChangeText={setPhone}
+                    placeholderText="Enter phone no."
+                />
+
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveNewDeveloperData()} disabled={disableAddButton}>
                     <Text style={styles.saveText}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -414,7 +486,7 @@ const AssignInventoryItemsScreen = () => {
     }
 
     const getModalChildComponent = useMemo(() => {
-
+console.log("calling===")
         if (isItemModalVisible) {
             return addItemModalChildComponent();
         }
@@ -424,10 +496,13 @@ const AssignInventoryItemsScreen = () => {
         else if (isClientListModalVisible) {
             return addClientModalChildComponent()
         }
-        else if (isAddProOwnerModalVisible) {
-            return addEmployeeModalChildComponent();
+        else if (isAddProOwnerModalVisible ) {
+            return addProjectOwnerModalChildComponent();
         }
-    }, [isItemModalVisible, isBrandListModalVisible, isClientListModalVisible, isAddProOwnerModalVisible])
+        else if (isAddDeveloperModalVisible) {
+            return addDeveloperModalChildComponent();
+        }
+    }, [isItemModalVisible, isBrandListModalVisible, isClientListModalVisible, isAddProOwnerModalVisible, isAddDeveloperModalVisible])
 
     const handleModalClose = () => {
 
@@ -444,6 +519,9 @@ const AssignInventoryItemsScreen = () => {
         else if (isAddProOwnerModalVisible) {
             setIsAddProOwnerModalVisible(false);
         }
+        else if (isAddDeveloperModalVisible) {
+            setIsAddDeveloperModalVisible(false);
+        }
     }
 
     return (
@@ -456,10 +534,15 @@ const AssignInventoryItemsScreen = () => {
             <View style={styles.separatorStyle} />
 
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textTitle}>Item :</Text>
+                    <View style={styles.inputView}>
+                    <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
+                    </View>
+                </View>
 
                 <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}> Item Brand Name :</Text>
+                    <Text style={styles.textTitle}>Item Brand Name :</Text>
                     <TouchableOpacity style={styles.brandNameContainer}>
                         <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} />
                     </TouchableOpacity>
@@ -488,16 +571,26 @@ const AssignInventoryItemsScreen = () => {
 
                 {fromClient &&
                     <View style={styles.secondaryContainer}>
-                        <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} />
+                        <Text style={styles.textTitle}>Client Name :</Text>
+                        <TouchableOpacity style={styles.clientNameContainer}>
+                            <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} />
+                        </TouchableOpacity>
                     </View>
                 }
 
-                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible} childComponent={getModalChildComponent} closeModal={() => handleModalClose()} />
+                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible} childComponent={getModalChildComponent} closeModal={() => handleModalClose()} />
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Project Owner : </Text>
+                    <Text style={styles.textTitle}>Project Owner :</Text>
                     <View style={styles.inputView}>
-                        <DropdownListComponent data={employeeListData} selectedItem={(item) => toggleProjectOwnerModal(item)} />
+                        <DropdownListComponent data={projectOwnerListData} selectedItem={(item) => toggleProjectOwnerModal(item)} />
+                    </View>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textTitle}>Developer :</Text>
+                    <View style={styles.inputView}>
+                        <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} />
                     </View>
                 </View>
 

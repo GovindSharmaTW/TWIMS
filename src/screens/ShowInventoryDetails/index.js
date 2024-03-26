@@ -21,7 +21,7 @@ const ShowInventoryDetailsScreen = () => {
         const assignedInventoryRef = database().ref('/AssignedInventoryDetails');
 
         const unsubscribeAssignedInventoryDetails = assignedInventoryRef.on('value', snapshot => {
-            const data = snapshot.val();
+            const data = snapshot?.val();
 
             if (data) {
                 const tempData = Object.keys(data).map((key, index) => {

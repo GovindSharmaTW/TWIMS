@@ -1,11 +1,13 @@
-const employeeRef = '/Employee';
+const projectOwnerRef = '/ProjectOwner';
+const developerRef = '/Developer';
 const inventoryItemsRef = '/InventoryItems';
 const inventoryItemsBrandNameRef = '/InventoryItemBrandName';
 const clientsRef = '/Clients';
 const assignedItemDetailsRef = '/AssignedInventoryDetails';
 
 export {
-    employeeRef,
+    projectOwnerRef,
+    developerRef,
     inventoryItemsRef,
     inventoryItemsBrandNameRef,
     clientsRef,

@@ -1,10 +1,12 @@
 import database from '@react-native-firebase/database';
-import { assignedItemDetailsRef, clientsRef, employeeRef, inventoryItemsBrandNameRef, inventoryItemsRef } from './firebaseConstants';
+import { assignedItemDetailsRef, clientsRef, developerRef, employeeRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from './firebaseConstants';
 
 const getRef = (type) => {
     switch (type) {
-        case 'addEmployee':
-            return employeeRef;
+        case 'addDeveloper':
+            return developerRef;
+        case 'addProjectOwner':
+            return projectOwnerRef;
         case 'addItem':
             return inventoryItemsRef;
         case 'addItemBrandName':
@@ -18,6 +20,8 @@ const getRef = (type) => {
 }
 
 export const addNewData = async (params) => {
+
+    console.log("TT01 addNewItem firebase called",params);
 
     const { data, type } = params;
 
