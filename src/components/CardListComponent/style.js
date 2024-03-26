@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     },
     textSubTitle:{
         color:Colors.gray,
-        fontSize:Fonts.large,
+        fontSize:ms(20),
     },
     separatorStyle:{
         backgroundColor:Colors.primary,
