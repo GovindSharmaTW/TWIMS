@@ -162,7 +162,32 @@ export const styles = StyleSheet.create({
     },
     cardListContainer: {
         marginVertical: ms(10),
-        marginBottom:ms(180)
-    }
+        marginBottom: ms(180)
+    },
+    filterIconContainer: {
+        alignSelf: 'flex-end'
+    },
+    modalSecondaryContainer: {
+        paddingHorizontal: '5%'
+    },
+    projOwnerTextStyle: {
+        color: Colors.primary,
+        fontSize: Fonts.large,
+        marginVertical: ms(5)
+    },
+    addBtn: {
+        width: '100%',
+        backgroundColor: Colors.primary,
+        borderRadius: 10,
+        padding: ms(10),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: ms(10),
+        alignSelf: 'center'
+    },
+    saveText: {
+        color: Colors.white,
+        fontSize: Fonts.large
+    },
 
 })
