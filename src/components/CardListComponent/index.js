@@ -61,6 +61,7 @@ export const CardListComponent = ({ data }) => {
             data={cardListData}
             renderItem={(item) => renderItem(item)}
             ListEmptyComponent={ListEmptyComponent}
+            keyExtractor={(item)=>item.value}
         />
     )
 

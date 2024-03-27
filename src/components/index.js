@@ -5,6 +5,7 @@ import { UserListComponent } from "./UserListComponent";
 import { DropdownListComponent } from "./DropdownListComponent";
 import { InputText } from './InputText';
 import { ModalComponent } from './ModalComponent';
+import { SearchInputText } from './SearchInputText';
 
 export {
     ClientListComponent,
@@ -13,5 +14,6 @@ export {
     UserListComponent,
     DropdownListComponent,
     InputText,
-    ModalComponent
+    ModalComponent,
+    SearchInputText
 }

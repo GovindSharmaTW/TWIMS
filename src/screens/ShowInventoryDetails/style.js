@@ -161,7 +161,8 @@ export const styles = StyleSheet.create({
         textAlign: 'center'
     },
     cardListContainer: {
-        marginVertical: ms(10)
+        marginVertical: ms(10),
+        marginBottom:ms(180)
     }
 
 })

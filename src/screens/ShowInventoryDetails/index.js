@@ -1,19 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import {SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 import { styles } from './style';
-import { CardListComponent, DropdownListComponent } from '../../components';
+import { CardListComponent, SearchInputText } from '../../components';
 import database from '@react-native-firebase/database';
+
 const ShowInventoryDetailsScreen = () => {
 
     const [assignedInventoryData, setAssignedInventoryData] = useState('');
-    const [tableData, setTableData] = useState([]);
+    const [cardListData, setCardListData] = useState([]);
+    const [searchText, setSearchText] = useState('')
 
+    function searchData(query) {
 
-    const selectItem = (selectedUser) => {
+        const searchResults = assignedInventoryData.filter(item =>
+            item.label.toLowerCase().includes(query.toLowerCase()) ||
+            item.projectOwner.toLowerCase().includes(query.toLowerCase()) ||
+            item.item.toLowerCase().includes(query.toLowerCase()) ||
+            item.clientName.toLowerCase().includes(query.toLowerCase()) 
+        );
 
-        const selectedUserInventoryDetails = assignedInventoryData.filter(item => item.label === selectedUser);
+        console.log("searcResult",searchResults,query);
+        return searchResults;
+    }
 
-        setTableData(selectedUserInventoryDetails);
+    const filterList = (searchText) => {
+        setCardListData(searchData(searchText));
     }
 
     useEffect(() => {
@@ -39,6 +50,7 @@ const ShowInventoryDetailsScreen = () => {
                 });
 
                 setAssignedInventoryData(tempData);
+                setCardListData(tempData);
             }
         });
 
@@ -58,10 +70,9 @@ const ShowInventoryDetailsScreen = () => {
 
             <View style={styles.scrollViewStyle} bounces={false}>
 
-                <DropdownListComponent data={assignedInventoryData} selectedItem={selectItem} placeholder={'Select project owner'} />
-
+                <SearchInputText onChangeText={(text) => { setSearchText(text), filterList(text) }} placeholderText={'Search...'} />
                 <View style={styles.cardListContainer}>
-                    <CardListComponent data={assignedInventoryData}/>
+                    <CardListComponent data={cardListData} />
                 </View>
             </View>
 
