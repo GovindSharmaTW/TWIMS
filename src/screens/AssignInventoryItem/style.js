@@ -19,6 +19,11 @@ export const styles = StyleSheet.create({
     fontSize: Fonts.large,
     marginVertical: ms(5)
   },
+  addImageTextStyle: {
+    color: '#0088AF',
+    fontSize: Fonts.large,
+    textAlign:'center'
+  },
   selectItemBrandNameTextStyle: {
     color: Colors.primary,
     fontSize: Fonts.large,
@@ -43,6 +48,12 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     height: 1,
     width: '100%'
+  },
+  optionSeparatorStyle: {
+    backgroundColor: Colors.primary,
+    height: 1,
+    width: '100%',
+    marginVertical:ms(10)
   },
 
   modalHeaderSeparator: {
@@ -98,6 +109,11 @@ export const styles = StyleSheet.create({
     paddingTop: '7%',
     alignItems: 'center',
   },
+  imageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: '7%',
+  },
   developerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -131,11 +147,21 @@ export const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.primary,
     borderRadius: 10,
-    height: ms(50),
+    padding:ms(10),
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: ms(40),
     marginBottom: ms(10),
+    alignSelf: 'center'
+  },
+  addImageBtn: {
+    width: '100%',
+    backgroundColor: Colors.primary,
+    borderRadius: 10,
+    padding:ms(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: ms(40),
     alignSelf: 'center'
   },
   addBtn: {
@@ -191,6 +217,7 @@ export const styles = StyleSheet.create({
   },
   modalSecondaryContainer: {
     paddingHorizontal: '5%'
-  }
+  },
+  imageStyle:{ height:ms(200), width:ms(200) }
 
 })

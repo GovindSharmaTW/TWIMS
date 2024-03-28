@@ -17,6 +17,7 @@ const AssignInventoryItemsScreen = () => {
     const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
     const [isAddDeveloperModalVisible, setIsAddDeveloperModalVisible] = useState(false);
+    const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
     const [selectedClient, setSelectedClient] = useState('');
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
@@ -371,7 +372,8 @@ const AssignInventoryItemsScreen = () => {
                 clientName: selectedClient,
                 projectOwnerName: projectOwner,
                 developer: developer,
-                assignedDate : getCurrentDate()
+                assignedDate: getCurrentDate(),
+                imageUri: imageSource
             }
 
             const type = 'addAssignedItemsData';
@@ -481,27 +483,17 @@ const AssignInventoryItemsScreen = () => {
     const addDeveloperModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
-                <Text style={styles.projOwnerTextStyle}>Name :</Text>
-                <InputText
-                    onChangeText={setDeveloper}
-                    placeholderText="Enter developer name"
-                />
 
-                <Text style={styles.projOwnerTextStyle}>Email :</Text>
-                <InputText
-                    onChangeText={setEmail}
-                    placeholderText="Enter email"
-                />
-
-                <Text style={styles.projOwnerTextStyle}>Phone No. :</Text>
-                <InputText
-                    onChangeText={setPhone}
-                    placeholderText="Enter phone no."
-                />
-
-                <TouchableOpacity style={styles.addBtn} onPress={() => saveNewDeveloperData()} disabled={disableAddButton}>
-                    <Text style={styles.saveText}>Add</Text>
+                <TouchableOpacity onPress={() => openImagePicker()}>
+                    <Text style={styles.addImageTextStyle}>Select Image from Gallery</Text>
                 </TouchableOpacity>
+
+                <View style={styles.optionSeparatorStyle} />
+
+                <TouchableOpacity onPress={() => handleCameraLaunch()}>
+                    <Text style={styles.addImageTextStyle}>Open Camera</Text>
+                </TouchableOpacity>
+
             </View>
         )
     }
@@ -520,6 +512,9 @@ const AssignInventoryItemsScreen = () => {
             return addProjectOwnerModalChildComponent();
         }
         else if (isAddDeveloperModalVisible) {
+            return addDeveloperModalChildComponent();
+        }
+        else if (isAddImageModalVisible) {
             return addDeveloperModalChildComponent();
         }
     }
@@ -542,32 +537,54 @@ const AssignInventoryItemsScreen = () => {
         else if (isAddDeveloperModalVisible) {
             setIsAddDeveloperModalVisible(false);
         }
+        else if (isAddImageModalVisible) {
+            setIsAddImageModalVisible(false);
+        }
     }
 
-    const selectImage = () => {
+    const handleCameraLaunch = () => {
 
-            const options = {
-              mediaType: 'photo',
-              includeBase64: true,
-              maxHeight: 2000,
-              maxWidth: 2000,
-            };
-          
-            launchCamera(options, response => {
-                console.log("image response is",response.assets?.[0]?.uri);
-              if (response.didCancel) {
-                console.log('User cancelled camera');
-              } else if (response.error) {
-                console.log('Camera Error: ', response.error);
-              } else {
+        const options = {
+            mediaType: 'photo',
+            includeBase64: true,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
+
+        launchCamera(options, response => {
+            if (response.didCancel) {
+                alert('User cancelled camera');
+            } else if (response.error) {
+                alert('Camera Error: ', response.error);
+            } else {
                 let imageUri = response.uri || response.assets?.[0]?.uri;
 
                 setImageSource(imageUri);
-                console.log(imageUri);
-              }
-            });
+                handleModalClose();
+            }
+        });
     }
 
+    const openImagePicker = () => {
+        const options = {
+            mediaType: 'photo',
+            includeBase64: false,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
+
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+                alert('User cancelled image picker');
+            } else if (response.error) {
+                alert('Image picker error: ', response.error);
+            } else {
+                let imageUri = response.uri || response.assets?.[0]?.uri;
+                setImageSource(imageUri);
+                handleModalClose();
+            }
+        });
+    };
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -579,12 +596,6 @@ const AssignInventoryItemsScreen = () => {
             <View style={styles.separatorStyle} />
 
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-
-                {console.log("image source is",imageSource)}
-
-                {imageSource && <Image source={{uri:imageSource}} style={{ width: 200, height: 200 }} />}
-                <Button title="Select Image" onPress={selectImage} />
-               
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Item :</Text>
                     <View style={styles.inputView}>
@@ -629,7 +640,7 @@ const AssignInventoryItemsScreen = () => {
                     </View>
                 }
 
-                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
+                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner :</Text>
@@ -644,6 +655,19 @@ const AssignInventoryItemsScreen = () => {
                         <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} />
                     </View>
                 </View>
+
+                {imageSource &&
+                    <View style={styles.imageContainer}>
+                        <Text style={styles.textTitle}>Image :</Text>
+                        <Image source={{ uri: imageSource }} style={styles.imageStyle} />
+                        </View>
+                }
+
+
+
+                <TouchableOpacity style={styles.addImageBtn} onPress={() => setIsAddImageModalVisible(true)}>
+                    <Text style={styles.saveText}>Add Image</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity style={styles.saveBtn} onPress={() => saveAssignedInventoryDetails()} disabled={disableSaveButton}>
                     <Text style={styles.saveText}>Save Data</Text>
