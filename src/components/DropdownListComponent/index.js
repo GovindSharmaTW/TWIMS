@@ -8,9 +8,14 @@ export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
+    const handleValueChange = (item) => {
+        setValue(item);
+        selectedItem(item.label);
+        setIsFocus(false);
+    };
+
 
     return (
-        
         <View>
             {data.length > 0 ?
                 <Dropdown
@@ -23,17 +28,14 @@ export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
                     search
                     maxHeight={300}
                     labelField="label"
-                    valueField="value"
+                    valueField="label"
                     placeholder={!isFocus ? placeholder : '...'}
                     searchPlaceholder="Search..."
                     value={value}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
-                    onChange={item => {
-                        setValue(item.value);
-                        selectedItem(item.label);
-                        setIsFocus(false);
-                    }}
+                    keyboardAvoiding={true}
+                    onChange={handleValueChange}
                 />
                 :
                 <View style={[styles.dropdown, styles.emptyDataContainer]}>
