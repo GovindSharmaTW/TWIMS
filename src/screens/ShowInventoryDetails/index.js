@@ -17,6 +17,7 @@ const ShowInventoryDetailsScreen = () => {
     const [developer, setDeveloper] = useState('');
     const [searchItem, setSearchItem] = useState('');
     const [clientName, setClientName] = useState('');
+    const [imageSource, setImageSource] = useState(null);
 
     function searchData(query) {
 
@@ -40,29 +41,17 @@ const ShowInventoryDetailsScreen = () => {
 
     const filterList = async () => {
 
-        console.log("TT01 ", developer, projectOwner, searchItem, clientName);
-        console.log("filterList assignedInventoryData", assignedInventoryData);
-
-
-
-        const searchResults = await assignedInventoryData.filter(item => {
-            console.log("searchItem===", searchItem + "--", item.item.trim())
-            console.log("filter condition check", item.label.toLowerCase().trim().includes(developer.toLowerCase().trim()),
-                item.projectOwner.toLowerCase().trim().includes(projectOwner.toLowerCase().trim()),
-                item.item.trim().toLowerCase().replace(" ", "").includes(searchItem.trim().toLowerCase()),
-                item.clientName.toLowerCase().trim().includes(clientName.toLowerCase().trim()))
+        const searchResults = await assignedInventoryData.filter((item,index) => {
 
             return (
-                item.label.toLowerCase().trim().includes(developer.toLowerCase().trim()) ||
-                item.projectOwner.toLowerCase().trim().includes(projectOwner.toLowerCase().trim()) ||
-                item.item.toLowerCase().trim().includes(searchItem.toLowerCase().trim()) ||
-                item.clientName.toLowerCase().trim().includes(clientName.toLowerCase().trim())
+                item.label.toLowerCase().includes(developer.toLowerCase()) &&
+                item.projectOwner.toLowerCase().includes(projectOwner.toLowerCase()) &&
+                item.item.toLowerCase().includes(searchItem.toLowerCase()) &&
+                item.clientName.toLowerCase().includes(clientName.toLowerCase())
             )
         }
 
         );
-
-        console.log("TT01 searchResults is", searchResults);
 
         if (searchResults.length > 0) {
             setCardListData(searchResults);
@@ -139,6 +128,7 @@ const ShowInventoryDetailsScreen = () => {
             </View>
         )
     }
+
 
     return (
         <SafeAreaView style={styles.baseContainer}>

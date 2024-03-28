@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
@@ -7,6 +7,8 @@ import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
 import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
 import { checkIsEmpty, getCurrentDate } from '../../utils';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 
 const AssignInventoryItemsScreen = () => {
 
@@ -31,6 +33,7 @@ const AssignInventoryItemsScreen = () => {
     const [projectOwnerListData, setProjectOwnerListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
+    const [imageSource, setImageSource] = useState(null);
 
     const toggleModal = (item) => {
         setIsItemModalVisible(item === 'Other');
@@ -541,6 +544,31 @@ const AssignInventoryItemsScreen = () => {
         }
     }
 
+    const selectImage = () => {
+
+            const options = {
+              mediaType: 'photo',
+              includeBase64: true,
+              maxHeight: 2000,
+              maxWidth: 2000,
+            };
+          
+            launchCamera(options, response => {
+                console.log("image response is",response.assets?.[0]?.uri);
+              if (response.didCancel) {
+                console.log('User cancelled camera');
+              } else if (response.error) {
+                console.log('Camera Error: ', response.error);
+              } else {
+                let imageUri = response.uri || response.assets?.[0]?.uri;
+
+                setImageSource(imageUri);
+                console.log(imageUri);
+              }
+            });
+    }
+
+
     return (
         <SafeAreaView style={styles.baseContainer}>
             <View style={styles.headerContainer}>
@@ -551,6 +579,12 @@ const AssignInventoryItemsScreen = () => {
             <View style={styles.separatorStyle} />
 
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+
+                {console.log("image source is",imageSource)}
+
+                {imageSource && <Image source={{uri:imageSource}} style={{ width: 200, height: 200 }} />}
+                <Button title="Select Image" onPress={selectImage} />
+               
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Item :</Text>
                     <View style={styles.inputView}>
