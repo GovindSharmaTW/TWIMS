@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { styles } from './style';
 import { Colors } from '../../constants';
@@ -37,7 +37,7 @@ export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
                 />
                 :
                 <View style={[styles.dropdown, styles.emptyDataContainer]}>
-                    <Text style={styles.selectedTextStyle}>No Data Found</Text>
+                    <ActivityIndicator/>
                 </View>
             }
         </View>

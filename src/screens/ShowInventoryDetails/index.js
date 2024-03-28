@@ -17,7 +17,6 @@ const ShowInventoryDetailsScreen = () => {
     const [developer, setDeveloper] = useState('');
     const [searchItem, setSearchItem] = useState('');
     const [clientName, setClientName] = useState('');
-    const [imageSource, setImageSource] = useState(null);
 
     function searchData(query) {
 

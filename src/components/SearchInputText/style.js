@@ -9,9 +9,9 @@ export const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius: 10,
         marginVertical:ms(10),
-        alignContent:'center',
         flexDirection:'row',
         padding:ms(10),
+        alignItems:'center'
 
       },
       inputText: {
