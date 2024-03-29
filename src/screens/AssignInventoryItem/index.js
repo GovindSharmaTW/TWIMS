@@ -479,8 +479,35 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
-
     const addDeveloperModalChildComponent = () => {
+        return (
+            <View style={styles.modalSecondaryContainer}>
+                <Text style={styles.projOwnerTextStyle}>Name :</Text>
+                <InputText
+                    onChangeText={setDeveloper}
+                    placeholderText="Enter developer name"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Email :</Text>
+                <InputText
+                    onChangeText={setEmail}
+                    placeholderText="Enter email"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Phone No. :</Text>
+                <InputText
+                    onChangeText={setPhone}
+                    placeholderText="Enter phone no."
+                />
+
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveNewDeveloperData()} disabled={disableAddButton}>
+                    <Text style={styles.saveText}>Add</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    const addImageModalChildComponent = () => {
         return (
             <View style={styles.modalSecondaryContainer}>
 
@@ -515,7 +542,7 @@ const AssignInventoryItemsScreen = () => {
             return addDeveloperModalChildComponent();
         }
         else if (isAddImageModalVisible) {
-            return addDeveloperModalChildComponent();
+            return addImageModalChildComponent();
         }
     }
 
@@ -660,7 +687,7 @@ const AssignInventoryItemsScreen = () => {
                     <View style={styles.imageContainer}>
                         <Text style={styles.textTitle}>Image :</Text>
                         <Image source={{ uri: imageSource }} style={styles.imageStyle} />
-                        </View>
+                    </View>
                 }
 
 
