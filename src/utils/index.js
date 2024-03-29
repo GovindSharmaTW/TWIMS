@@ -17,7 +17,7 @@ export const checkIsEmpty = (...item) => {
         })
     }
     else {
-        return false;
+        isValid = false;
     }
 
     return isValid;

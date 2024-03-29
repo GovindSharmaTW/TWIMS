@@ -43,9 +43,9 @@ const ShowInventoryDetailsScreen = () => {
         const searchResults = await assignedInventoryData.filter((item,index) => {
 
             return (
-                item.label.toLowerCase().includes(developer.toLowerCase()) &&
-                item.projectOwner.toLowerCase().includes(projectOwner.toLowerCase()) &&
-                item.item.toLowerCase().includes(searchItem.toLowerCase()) &&
+                item.label.toLowerCase().includes(developer.toLowerCase()) ||
+                item.projectOwner.toLowerCase().includes(projectOwner.toLowerCase()) ||
+                item.item.toLowerCase().includes(searchItem.toLowerCase()) ||
                 item.clientName.toLowerCase().includes(clientName.toLowerCase())
             )
         }
@@ -69,6 +69,8 @@ const ShowInventoryDetailsScreen = () => {
         const unsubscribeAssignedInventoryDetails = assignedInventoryRef.on('value', snapshot => {
             const data = snapshot?.val();
 
+            console.log("TT01 asigned inventory data",data);
+
             if (data) {
                 const tempData = Object.keys(data).map((key, index) => {
                     return {
@@ -80,7 +82,8 @@ const ShowInventoryDetailsScreen = () => {
                         fromThoughtWin: data[key].fromThoughtWin,
                         clientName: data[key].clientName,
                         assignedDate: data[key].assignedDate,
-                        projectOwner: data[key].projectOwnerName
+                        projectOwner: data[key].projectOwnerName,
+                        imageUrl : data[key].imageUri
                     };
                 });
 

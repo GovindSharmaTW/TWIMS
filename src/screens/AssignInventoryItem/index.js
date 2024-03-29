@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
@@ -8,6 +8,7 @@ import { addNewData } from '../../services/firebase';
 import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
 import { checkIsEmpty, getCurrentDate } from '../../utils';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import storage from '@react-native-firebase/storage';
 
 
 const AssignInventoryItemsScreen = () => {
@@ -34,7 +35,9 @@ const AssignInventoryItemsScreen = () => {
     const [projectOwnerListData, setProjectOwnerListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
+    const [isImageLoading, setIsImageLoading] = useState(false);
     const [imageSource, setImageSource] = useState(null);
+    const [resetDropdown, setResetDropdown] = useState(false);
 
     const toggleModal = (item) => {
         setIsItemModalVisible(item === 'Other');
@@ -390,6 +393,9 @@ const AssignInventoryItemsScreen = () => {
                 setSelectedClient('');
                 setProjectOwner('');
                 setDisableSaveButton(false);
+                setImageSource(null);
+                setResetDropdown(!resetDropdown);
+                setDeveloper('');
             }
             else {
                 alert('Something went wrong');
@@ -572,10 +578,11 @@ const AssignInventoryItemsScreen = () => {
     const handleCameraLaunch = () => {
 
         const options = {
-            mediaType: 'photo',
-            includeBase64: true,
-            maxHeight: 2000,
-            maxWidth: 2000,
+            title: 'Select Image',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
         };
 
         launchCamera(options, response => {
@@ -586,18 +593,23 @@ const AssignInventoryItemsScreen = () => {
             } else {
                 let imageUri = response.uri || response.assets?.[0]?.uri;
 
-                setImageSource(imageUri);
+                let uploadUri = imageUri.replace('file:///', '');
+
                 handleModalClose();
+                setIsImageLoading(true);
+                setDisableSaveButton(true);
+                addImageToFirebaseStorage(uploadUri);
             }
         });
     }
 
     const openImagePicker = () => {
         const options = {
-            mediaType: 'photo',
-            includeBase64: false,
-            maxHeight: 2000,
-            maxWidth: 2000,
+            title: 'Select Image',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
         };
 
         launchImageLibrary(options, (response) => {
@@ -607,10 +619,30 @@ const AssignInventoryItemsScreen = () => {
                 alert('Image picker error: ', response.error);
             } else {
                 let imageUri = response.uri || response.assets?.[0]?.uri;
-                setImageSource(imageUri);
+
+                let uploadUri = imageUri.replace('file:///', '');
+
                 handleModalClose();
+                setIsImageLoading(true);
+                setDisableSaveButton(true);
+                addImageToFirebaseStorage(uploadUri);
+
             }
         });
+    };
+
+
+    const addImageToFirebaseStorage = async (imageUri) => {
+
+        const imageName = 'image_' + Date.now() // Unique name for the image
+        const reference = storage().ref(`images/${imageName}`);
+        await reference.putFile(imageUri);
+
+        // Get the download URL of the uploaded image
+        const downloadURL = await reference.getDownloadURL();
+        setIsImageLoading(false);
+        setImageSource(downloadURL); // Set the image URL to state for display
+        setDisableSaveButton(false);
     };
 
     return (
@@ -626,14 +658,14 @@ const AssignInventoryItemsScreen = () => {
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Item :</Text>
                     <View style={styles.inputView}>
-                        <DropdownListComponent data={itemListData} selectedItem={toggleModal} />
+                        <DropdownListComponent data={itemListData} selectedItem={toggleModal} resetSelectedValue={resetDropdown} />
                     </View>
                 </View>
 
                 <View style={styles.checkBoxContainer}>
                     <Text style={styles.textTitle}>Item Brand Name :</Text>
                     <TouchableOpacity style={styles.brandNameContainer}>
-                        <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} />
+                        <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
                     </TouchableOpacity>
                 </View>
 
@@ -662,7 +694,7 @@ const AssignInventoryItemsScreen = () => {
                     <View style={styles.secondaryContainer}>
                         <Text style={styles.textTitle}>Client Name :</Text>
                         <TouchableOpacity style={styles.clientNameContainer}>
-                            <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} />
+                            <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} resetSelectedValue={resetDropdown} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -672,23 +704,31 @@ const AssignInventoryItemsScreen = () => {
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner :</Text>
                     <View style={styles.inputView}>
-                        <DropdownListComponent data={projectOwnerListData} selectedItem={(item) => toggleProjectOwnerModal(item)} />
+                        <DropdownListComponent data={projectOwnerListData} selectedItem={(item) => toggleProjectOwnerModal(item)} resetSelectedValue={resetDropdown} />
                     </View>
                 </View>
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Developer :</Text>
                     <View style={styles.inputView}>
-                        <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} />
+                        <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} resetSelectedValue={resetDropdown} />
                     </View>
                 </View>
 
-                {imageSource &&
-                    <View style={styles.imageContainer}>
-                        <Text style={styles.textTitle}>Image :</Text>
+
+                <View style={styles.imageContainer}>
+                    <Text style={styles.textTitle}>Image :</Text>
+                    {isImageLoading &&
+                        <ActivityIndicator />
+                    }
+
+                    {imageSource ?
                         <Image source={{ uri: imageSource }} style={styles.imageStyle} />
-                    </View>
-                }
+                        :
+                        <Text style={styles.subHeadingText}> No Image Selected</Text>
+
+                    }
+                </View>
 
 
 

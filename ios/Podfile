@@ -56,4 +56,5 @@ target 'TWIMS' do
       :mac_catalyst_enabled => false
     )
   end
+  pod 'RNFBStorage', :path => '../node_modules/@react-native-firebase/storage'
 end

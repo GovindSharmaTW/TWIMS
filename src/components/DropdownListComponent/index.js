@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { styles } from './style';
 import { Colors } from '../../constants';
 
-export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
+export const DropdownListComponent = ({ data, selectedItem, placeholder, resetSelectedValue }) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
@@ -14,6 +14,9 @@ export const DropdownListComponent = ({ data, selectedItem, placeholder }) => {
         setIsFocus(false);
     };
 
+    useEffect(() => {
+        setValue(null);
+    }, [resetSelectedValue])
 
     return (
         <View>

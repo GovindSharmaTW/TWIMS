@@ -35,6 +35,10 @@ export const styles = StyleSheet.create({
     fontSize: Fonts.large,
     marginRight: ms(10)
   },
+  subHeadingText: {
+    color: Colors.gray,
+    fontSize: ms(20),
+  },
   baseContainer: {
     flex: 1,
   },
