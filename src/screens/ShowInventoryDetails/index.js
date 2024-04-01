@@ -6,6 +6,7 @@ import database from '@react-native-firebase/database';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
+import { checkIsEmpty } from '../../utils';
 
 const ShowInventoryDetailsScreen = () => {
 
@@ -39,18 +40,17 @@ const ShowInventoryDetailsScreen = () => {
     }
 
     const filterList = async () => {
-
-        const searchResults = await assignedInventoryData.filter((item,index) => {
+        const searchResults = await assignedInventoryData.filter((item, index) => {
 
             return (
-                item.label.toLowerCase().includes(developer.toLowerCase()) ||
-                item.projectOwner.toLowerCase().includes(projectOwner.toLowerCase()) ||
-                item.item.toLowerCase().includes(searchItem.toLowerCase()) ||
-                item.clientName.toLowerCase().includes(clientName.toLowerCase())
+                checkIsEmpty(developer) && item.label.toLowerCase().includes(developer.toLowerCase()) ||
+                checkIsEmpty(projectOwner) && item.projectOwner.toLowerCase().includes(projectOwner.toLowerCase()) ||
+                checkIsEmpty(searchItem) && item.item.toLowerCase().includes(searchItem.toLowerCase()) ||
+                checkIsEmpty(clientName) && item.clientName.toLowerCase().includes(clientName.toLowerCase())
             )
         }
-
         );
+
 
         if (searchResults.length > 0) {
             setCardListData(searchResults);
@@ -69,7 +69,6 @@ const ShowInventoryDetailsScreen = () => {
         const unsubscribeAssignedInventoryDetails = assignedInventoryRef.on('value', snapshot => {
             const data = snapshot?.val();
 
-            console.log("TT01 asigned inventory data",data);
 
             if (data) {
                 const tempData = Object.keys(data).map((key, index) => {
@@ -130,7 +129,6 @@ const ShowInventoryDetailsScreen = () => {
             </View>
         )
     }
-
 
     return (
         <SafeAreaView style={styles.baseContainer}>
