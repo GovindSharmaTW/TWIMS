@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
 import { useEffect, useState } from "react";
 import { checkIsEmpty } from "../../utils";
@@ -6,7 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ms } from "../../utils/scaling-utils";
 import { Colors } from "../../constants";
 
-export const CardListComponent = ({ data }) => {
+export const CardListComponent = ({ data, navigation }) => {
 
     const [cardListData, setCardListData] = useState([]);
 
@@ -22,7 +22,7 @@ export const CardListComponent = ({ data }) => {
 
     const renderItem = ({ item }) => {
         return (
-            <View style={styles.cardContainer} onPress={() => selectedItem(item.title)}>
+            <TouchableOpacity style={styles.cardContainer} onPress={() => {navigation.navigate('ShowInventoryCardDetails',{data:item})}}>
                
                <View style={styles.iconContainer}>
                <MaterialIcons name="inventory" size={ms(27)} color={Colors.primary}/>
@@ -52,7 +52,7 @@ export const CardListComponent = ({ data }) => {
                     <Text style={styles.textTitle}>Date : </Text>
                     <Text style={styles.textSubTitle}> {item.assignedDate}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 

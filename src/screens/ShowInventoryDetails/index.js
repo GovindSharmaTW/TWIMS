@@ -8,7 +8,7 @@ import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
 import { checkIsEmpty } from '../../utils';
 
-const ShowInventoryDetailsScreen = () => {
+const ShowInventoryDetailsScreen = (props) => {
 
     const [assignedInventoryData, setAssignedInventoryData] = useState('');
     const [cardListData, setCardListData] = useState([]);
@@ -145,7 +145,7 @@ const ShowInventoryDetailsScreen = () => {
                     <MaterialIcons name={'filter-list'} size={ms(35)} color={Colors.primary} />
                 </TouchableOpacity>
                 <View style={styles.cardListContainer}>
-                    <CardListComponent data={cardListData} />
+                    <CardListComponent data={cardListData} navigation={props.navigation}/>
                 </View>
                 <ModalComponent isVisible={isFilterListModalVisible} childComponent={getModalChildComponent()} closeModal={() => setIsFilterListModalVisible(false)} />
 

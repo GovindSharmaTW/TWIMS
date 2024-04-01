@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Colors } from '../constants';
+import ShowInventoryCardDetails from '../screens/ShowInventoryCardDetails';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,21 @@ export const RootContainer = () => {
   );
 };
 
+const ShowInventoryDetailsScreenStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="ShowInventoryDetail"
+        component={ShowInventoryDetailsScreen}
+      />
+      <Stack.Screen
+        name="ScreenLoader"
+        component={ShowInventoryCardDetails}
+      />
+    </Stack.Navigator>
+  );
+};
+
 export const MyTabs = () => {
   return (
     <Tab.Navigator tabBarOptions={{
@@ -38,7 +54,7 @@ export const MyTabs = () => {
           <MaterialIcons name="assignment-ind" color={focused ? Colors.primary : color} size={size} />
         )
       }} />
-      <Tab.Screen name="ShowInventory" component={ShowInventoryDetailsScreen} options={{
+      <Tab.Screen name="ShowInventory" component={ShowInventoryDetailsScreenStack} options={{
         headerShown: false,
         tabBarIcon: ({ color, size, focused }) => (
           <MaterialIcons name="assignment" color={focused ? Colors.primary : color} size={size} />
