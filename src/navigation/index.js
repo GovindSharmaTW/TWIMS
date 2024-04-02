@@ -36,7 +36,7 @@ const ShowInventoryDetailsScreenStack = () => {
         component={ShowInventoryDetailsScreen}
       />
       <Stack.Screen
-        name="ScreenLoader"
+        name="ShowInventoryCardDetails"
         component={ShowInventoryCardDetails}
       />
     </Stack.Navigator>
