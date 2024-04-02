@@ -4,6 +4,7 @@ import { styles } from './style';
 import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ms } from '../../utils/scaling-utils';
+import { checkIsEmpty } from '../../utils';
 
 const ShowInventoryCardDetails = (props) => {
 
@@ -90,7 +91,7 @@ const ShowInventoryCardDetails = (props) => {
                 <View style={styles.imageContainer}>
                     <Text style={styles.textTitle}>Image :</Text>
 
-                    {isImageLoading &&
+                    {checkIsEmpty(data.imageUrl) && isImageLoading &&
                         <View style={styles.loaderContainer}>
                             <ActivityIndicator />
                         </View>
