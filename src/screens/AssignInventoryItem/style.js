@@ -222,6 +222,7 @@ export const styles = StyleSheet.create({
   modalSecondaryContainer: {
     paddingHorizontal: '5%'
   },
-  imageStyle:{ height:ms(200), width:ms(200) }
+  imageStyle:{ height:ms(200), width:ms(200) },
+  keyboardAvoidingViewStyle:{flex:1}
 
 })

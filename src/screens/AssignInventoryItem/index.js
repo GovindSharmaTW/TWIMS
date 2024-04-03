@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import { DropdownListComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
@@ -9,6 +9,7 @@ import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef
 import { checkIsEmpty, getCurrentDate } from '../../utils';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import { ms } from '../../utils/scaling-utils';
 
 
 const AssignInventoryItemsScreen = () => {
@@ -647,100 +648,102 @@ const AssignInventoryItemsScreen = () => {
 
     return (
         <SafeAreaView style={styles.baseContainer}>
-            <View style={styles.headerContainer}>
-                <View style={{ flex: 1 }}>
-                    <Text style={styles.headerTextStyle}>Assign Inventory Items</Text>
-                </View>
-            </View>
-            <View style={styles.separatorStyle} />
-
-            <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Item :</Text>
-                    <View style={styles.inputView}>
-                        <DropdownListComponent data={itemListData} selectedItem={toggleModal} resetSelectedValue={resetDropdown} />
+            <KeyboardAvoidingView style={styles.keyboardAvoidingViewStyle} behavior='position' keyboardVerticalOffset={ ms(50) }>
+                <View style={styles.headerContainer}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.headerTextStyle}>Assign Inventory Items</Text>
                     </View>
                 </View>
+                <View style={styles.separatorStyle} />
 
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>Item Brand Name :</Text>
-                    <TouchableOpacity style={styles.brandNameContainer}>
-                        <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
-                    </TouchableOpacity>
-                </View>
+                <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Item :</Text>
+                        <View style={styles.inputView}>
+                            <DropdownListComponent data={itemListData} selectedItem={toggleModal} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
 
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>From :</Text>
-                    <CheckBox
-                        disabled={false}
-                        value={fromClient}
-                        boxType={'square'}
-                        onValueChange={handleCheckbox1Change}
-                    />
-
-                    <Text style={styles.textTitle}> Client </Text>
-
-                    <CheckBox
-                        disabled={false}
-                        value={fromThoughtWin}
-                        boxType={'square'}
-                        onValueChange={handleCheckbox2Change}
-                    />
-
-                    <Text style={styles.textTitle}> ThoughtWin </Text>
-                </View>
-
-                {fromClient &&
-                    <View style={styles.secondaryContainer}>
-                        <Text style={styles.textTitle}>Client Name :</Text>
-                        <TouchableOpacity style={styles.clientNameContainer}>
-                            <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} resetSelectedValue={resetDropdown} />
+                    <View style={styles.checkBoxContainer}>
+                        <Text style={styles.textTitle}>Item Brand Name :</Text>
+                        <TouchableOpacity style={styles.brandNameContainer}>
+                            <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
                         </TouchableOpacity>
                     </View>
-                }
 
-                <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
+                    <View style={styles.checkBoxContainer}>
+                        <Text style={styles.textTitle}>From :</Text>
+                        <CheckBox
+                            disabled={false}
+                            value={fromClient}
+                            boxType={'square'}
+                            onValueChange={handleCheckbox1Change}
+                        />
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Project Owner :</Text>
-                    <View style={styles.inputView}>
-                        <DropdownListComponent data={projectOwnerListData} selectedItem={(item) => toggleProjectOwnerModal(item)} resetSelectedValue={resetDropdown} />
+                        <Text style={styles.textTitle}> Client </Text>
+
+                        <CheckBox
+                            disabled={false}
+                            value={fromThoughtWin}
+                            boxType={'square'}
+                            onValueChange={handleCheckbox2Change}
+                        />
+
+                        <Text style={styles.textTitle}> ThoughtWin </Text>
                     </View>
-                </View>
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.textTitle}>Developer :</Text>
-                    <View style={styles.inputView}>
-                        <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} resetSelectedValue={resetDropdown} />
-                    </View>
-                </View>
-
-
-                <View style={styles.imageContainer}>
-                    <Text style={styles.textTitle}>Image :</Text>
-                    {isImageLoading &&
-                        <ActivityIndicator />
+                    {fromClient &&
+                        <View style={styles.secondaryContainer}>
+                            <Text style={styles.textTitle}>Client Name :</Text>
+                            <TouchableOpacity style={styles.clientNameContainer}>
+                                <DropdownListComponent data={clientListData} selectedItem={toggleClientListModal} resetSelectedValue={resetDropdown} />
+                            </TouchableOpacity>
+                        </View>
                     }
 
-                    {imageSource ?
-                        <Image source={{ uri: imageSource }} style={styles.imageStyle} />
-                        :
-                        <Text style={styles.subHeadingText}> No Image Selected</Text>
+                    <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
 
-                    }
-                </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Project Owner :</Text>
+                        <View style={styles.inputView}>
+                            <DropdownListComponent data={projectOwnerListData} selectedItem={(item) => toggleProjectOwnerModal(item)} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Developer :</Text>
+                        <View style={styles.inputView}>
+                            <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
+
+
+                    <View style={styles.imageContainer}>
+                        <Text style={styles.textTitle}>Image :</Text>
+                        {isImageLoading &&
+                            <ActivityIndicator />
+                        }
+
+                        {imageSource ?
+                            <Image source={{ uri: imageSource }} style={styles.imageStyle} />
+                            :
+                            <Text style={styles.subHeadingText}> No Image Selected</Text>
+
+                        }
+                    </View>
 
 
 
-                <TouchableOpacity style={styles.addImageBtn} onPress={() => setIsAddImageModalVisible(true)}>
-                    <Text style={styles.saveText}>Add Image</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.addImageBtn} onPress={() => setIsAddImageModalVisible(true)}>
+                        <Text style={styles.saveText}>Add Image</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.saveBtn} onPress={() => saveAssignedInventoryDetails()} disabled={disableSaveButton}>
-                    <Text style={styles.saveText}>Save Data</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.saveBtn} onPress={() => saveAssignedInventoryDetails()} disabled={disableSaveButton}>
+                        <Text style={styles.saveText}>Save Data</Text>
+                    </TouchableOpacity>
 
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
 
         </SafeAreaView >
 
