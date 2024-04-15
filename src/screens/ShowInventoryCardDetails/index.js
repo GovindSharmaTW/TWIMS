@@ -5,12 +5,20 @@ import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ms } from '../../utils/scaling-utils';
 import { checkIsEmpty } from '../../utils';
+import { ImagePreviewComponent, ModalComponent } from '../../components';
 
 const ShowInventoryCardDetails = (props) => {
 
     const [isImageLoading, setIsImageLoading] = useState(true);
+    const [showImagePreview, setShowImagePreview] = useState(false);
 
     const data = props?.route?.params?.data;
+
+    const showImagePreviewComponent = () => {
+        return (
+            <ImagePreviewComponent data={data.imageUrl} showImagePreview={showImagePreview} showDeleteButton={false} />
+        )
+    }
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -32,12 +40,14 @@ const ShowInventoryCardDetails = (props) => {
                     </View>
                 </View>
 
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>Item Brand Name :</Text>
-                    <TouchableOpacity style={styles.brandNameContainer}>
-                        <Text style={styles.textSubTitle}>{data.itemBrandName}</Text>
-                    </TouchableOpacity>
-                </View>
+                {data.item !== "SIM" &&
+                    <View style={styles.checkBoxContainer}>
+                        <Text style={styles.textTitle}>Item Brand Name :</Text>
+                        <TouchableOpacity style={styles.brandNameContainer}>
+                            <Text style={styles.textSubTitle}>{data.itemBrandName}</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
 
                 <View style={styles.checkBoxContainer}>
                     <Text style={styles.textTitle}>From :</Text>
@@ -65,6 +75,19 @@ const ShowInventoryCardDetails = (props) => {
                         </TouchableOpacity>
                     </View>
                 }
+                <View style={styles.checkBoxContainer}>
+                    <Text style={styles.textTitle}>Sim Company Name :</Text>
+                    <TouchableOpacity style={styles.brandNameContainer}>
+                        <Text style={styles.textSubTitle}>{data.assignedSimCompName}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.checkBoxContainer}>
+                    <Text style={styles.textTitle}>Sim Number :</Text>
+                    <TouchableOpacity style={styles.brandNameContainer}>
+                        <Text style={styles.textSubTitle}>{data.assignedSimNumber}</Text>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner :</Text>
@@ -91,19 +114,33 @@ const ShowInventoryCardDetails = (props) => {
                 <View style={styles.imageContainer}>
                     <Text style={styles.textTitle}>Image :</Text>
 
-                    {checkIsEmpty(data.imageUrl) && isImageLoading &&
+                    {data.imageUrl && isImageLoading &&
                         <View style={styles.loaderContainer}>
                             <ActivityIndicator />
                         </View>
                     }
 
+                    {data.imageUrl && data.imageUrl.length > 0 ?
+                        <View>
+                            <View>
+                                <Image source={{ uri: data.imageUrl[0].uri }} style={styles.imageStyle} onLoadEnd={() => setIsImageLoading(false)} />
 
-                    {data.imageUrl ?
-                        <Image source={{ uri: data.imageUrl }} style={styles.imageStyle} onLoadEnd={() => setIsImageLoading(false)} />
+                                {data.imageUrl.length > 1 &&
+                                    <Text style={styles.imageCountText}>+{data.imageUrl.length - 1}</Text>
+                                }
+                            </View>
+
+                            <TouchableOpacity onPress={() => setShowImagePreview(true)} >
+                                <Text style={styles.linkText}>Preview image</Text>
+                            </TouchableOpacity>
+                        </View>
                         :
-                        <Text style={styles.subHeadingText}>No Image Found</Text>
+                        <Text style={styles.subHeadingText}> No Image Found</Text>
 
                     }
+
+                    <ModalComponent isVisible={showImagePreview} childComponent={showImagePreviewComponent()} closeModal={() => setShowImagePreview(false)} />
+
                 </View>
 
             </ScrollView>

@@ -2,7 +2,7 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./style";
 import { useEffect, useState } from "react";
 
-export const ImagePreviewComponent = ({ data, deletedImage }) => {
+export const ImagePreviewComponent = ({ data, deletedImage, showDeleteButton }) => {
 
     const [imageData, setImageData] = useState([]);
     const [isImageLoading, setIsImageLoading] = useState(true);
@@ -25,9 +25,12 @@ export const ImagePreviewComponent = ({ data, deletedImage }) => {
                         resizeMode='contain'
                         onLoad={() => setIsImageLoading(false)}
                     />
-                    <TouchableOpacity style={styles.addImageBtn} onPress={() => deletedImage(item)}>
-                        <Text style={styles.saveText}>Delete</Text>
-                    </TouchableOpacity>
+                    {showDeleteButton &&
+                        <TouchableOpacity style={styles.addImageBtn} onPress={() => deletedImage(item)}>
+                            <Text style={styles.saveText}>Delete</Text>
+                        </TouchableOpacity>
+                    }
+
                 </View>
             </View>
         )

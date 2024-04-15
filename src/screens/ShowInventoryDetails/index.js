@@ -82,7 +82,10 @@ const ShowInventoryDetailsScreen = (props) => {
                         clientName: data[key].clientName,
                         assignedDate: data[key].assignedDate,
                         projectOwner: data[key].projectOwnerName,
-                        imageUrl : data[key].imageUri
+                        imageUrl : data[key].imageUri,
+                        assignedSimNumber : data[key].simNumber,
+                        assignedSimCompName: data[key].simCompanyName
+
                     };
                 });
 

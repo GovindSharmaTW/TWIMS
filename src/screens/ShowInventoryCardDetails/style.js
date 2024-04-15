@@ -229,5 +229,18 @@ export const styles = StyleSheet.create({
     color:Colors.gray,
     fontSize:ms(20),
 },
+imageCountText: {
+  color: Colors.white,
+  fontSize: ms(40),
+  position:'absolute',
+  right:ms(10),
+  bottom:ms(10)
+},
+linkText: {
+  color: '#0080ff',
+  fontSize: ms(18),
+  alignSelf:'flex-end',
+  marginTop:ms(5)
+},
 
 })

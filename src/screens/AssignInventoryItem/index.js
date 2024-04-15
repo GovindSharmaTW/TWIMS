@@ -709,7 +709,7 @@ const AssignInventoryItemsScreen = () => {
 
     const showImagePreviewComponent = () => {
         return (
-            <ImagePreviewComponent data={assignedItemImageCollection} deletedImage={removeImage} showImagePreview={showImagePreview} />
+            <ImagePreviewComponent data={assignedItemImageCollection} deletedImage={removeImage} showImagePreview={showImagePreview} showDeleteButton={true}/>
         )
     }
 
