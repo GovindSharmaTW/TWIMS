@@ -2,8 +2,10 @@ const projectOwnerRef = '/ProjectOwner';
 const developerRef = '/Developer';
 const inventoryItemsRef = '/InventoryItems';
 const inventoryItemsBrandNameRef = '/InventoryItemBrandName';
+const simCompNameRef = '/simCompanyName';
 const clientsRef = '/Clients';
 const assignedItemDetailsRef = '/AssignedInventoryDetails';
+const simNumberRef = '/simNumbers';
 
 export {
     projectOwnerRef,
@@ -11,5 +13,7 @@ export {
     inventoryItemsRef,
     inventoryItemsBrandNameRef,
     clientsRef,
-    assignedItemDetailsRef
+    assignedItemDetailsRef,
+    simNumberRef,
+    simCompNameRef
 }

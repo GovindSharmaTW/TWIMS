@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
-import { DropdownListComponent, InputText, ModalComponent } from '../../components';
+import { DropdownListComponent, ImagePreviewComponent, InputText, ModalComponent } from '../../components';
 import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
-import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef } from '../../services/firebase/firebaseConstants';
+import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from '../../services/firebase/firebaseConstants';
 import { checkIsEmpty, getCurrentDate } from '../../utils';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { ms } from '../../utils/scaling-utils';
-
 
 const AssignInventoryItemsScreen = () => {
 
     const [isItemModalVisible, setIsItemModalVisible] = useState(false);
     const [isClientListModalVisible, setIsClientListModalVisible] = useState(false);
     const [isBrandListModalVisible, setIsBrandListModalVisible] = useState(false);
+    const [addSimCompNameModalVisible, setAddSimCompNameModalVisible] = useState(false);
+    const [isAddSimNumModalVisible, setIsAddSimNumModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
     const [isAddDeveloperModalVisible, setIsAddDeveloperModalVisible] = useState(false);
     const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
     const [selectedClient, setSelectedClient] = useState('');
+    const [simNum, setSimNum] = useState('');
+    const [SimCompName, setSimCompName] = useState('');
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
@@ -31,14 +34,18 @@ const AssignInventoryItemsScreen = () => {
     const [phone, setPhone] = useState('');
     const [itemListData, setItemListData] = useState([]);
     const [brandListData, setBrandListData] = useState([]);
+    const [simCompanyNameData, setSimCompanyNameData] = useState([]);
     const [clientListData, setClientListData] = useState([]);
     const [developerListData, setDeveloperListData] = useState([]);
     const [projectOwnerListData, setProjectOwnerListData] = useState([]);
+    const [simNumListData, setSimNumListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(false);
     const [imageSource, setImageSource] = useState(null);
     const [resetDropdown, setResetDropdown] = useState(false);
+    const [assignedItemImageCollection, setAssignedItemImageCollection] = useState([])
+    const [showImagePreview, setShowImagePreview] = useState(false);
 
     const toggleModal = (item) => {
         setIsItemModalVisible(item === 'Other');
@@ -53,6 +60,16 @@ const AssignInventoryItemsScreen = () => {
     const toggleItemBrandListModal = (item) => {
         setIsBrandListModalVisible(item === 'Other');
         setSelectedItemBrandName(item);
+    };
+
+    const toggleSimCompanyNameModal = (item) => {
+        setAddSimCompNameModalVisible(item === 'Other');
+        setSimCompName(item);
+    };
+
+    const toggleSimNumModal = (item) => {
+        setIsAddSimNumModalVisible(item === 'Other');
+        setSimNum(item);
     };
 
     const toggleProjectOwnerModal = (item) => {
@@ -169,6 +186,26 @@ const AssignInventoryItemsScreen = () => {
             }
         });
 
+        const simCompanyNameRef = database().ref(simCompNameRef);
+
+        const unsubscribeSimCompName = simCompanyNameRef.on('value', snapshot => {
+            const data = snapshot?.val();
+
+            if (data === null || data === undefined) {
+                setSimCompanyNameData([{ label: 'Other', value: 'T001' }]);
+            }
+            else {
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].simCompanyName, value: data[key].companyId };
+                });
+
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+                setSimCompanyNameData(tempData);
+            }
+        });
+
         const projectOwnersRef = database().ref(projectOwnerRef);
 
         const unsubscribeProOwner = projectOwnersRef.on('value', snapshot => {
@@ -193,16 +230,51 @@ const AssignInventoryItemsScreen = () => {
             }
         });
 
+        const simNumRef = database().ref(simNumberRef);
+
+        const unsubscribeSimNum = simNumRef.on('value', snapshot => {
+
+            const data = snapshot?.val();
+
+            if (data === null || data === undefined) {
+
+                setSimNumListData([{ label: 'Other', value: 'T001' }]);
+            }
+            else {
+
+                const tempData = Object.keys(data).map(key => {
+                    return { label: data[key].simNumber, value: data[key].simId };
+                });
+
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setSimNumListData(tempData);
+            }
+        });
+
         return () => {
             unsubscribeProOwner();
             unsubscribeDeveloper();
             unsubscribeClient();
             unsubscribeInventoryItem();
             unsubscribeBrandName();
+            unsubscribeSimNum();
+            unsubscribeSimCompName();
 
         }
     }, []);
 
+    useEffect(() => {
+        if (assignedItemImageCollection.length > 0) {
+            setImageSource(assignedItemImageCollection[0].uri);
+
+        }
+        else {
+            setImageSource(null);
+        }
+    }, [assignedItemImageCollection])
 
     const saveNewDeveloperData = async () => {
 
@@ -362,6 +434,64 @@ const AssignInventoryItemsScreen = () => {
         }
     }
 
+    const saveSimNumber = async () => {
+
+        if (checkIsEmpty(simNum) && simNum !== 'Other') {
+            setDisableAddButton(true);
+
+            const type = 'addSimNumber';
+
+            const data = {
+                simNumber: simNum
+            };
+
+            const params = { data, type };
+
+            const res = await addNewData(params);
+
+            if (res === 'success') {
+                setIsAddSimNumModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
+        }
+        else {
+            alert("Please insert valid data !");
+        }
+    }
+
+    const saveSimCompName = async () => {
+
+        if (checkIsEmpty(SimCompName) && SimCompName !== 'Other') {
+            setDisableAddButton(true);
+
+            const type = 'addSimCompName';
+
+            const data = {
+                simCompanyName: SimCompName
+            };
+
+            const params = { data, type };
+
+            const res = await addNewData(params);
+
+            if (res === 'success') {
+                setAddSimCompNameModalVisible(false);
+                setDisableAddButton(false);
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
+        }
+        else {
+            alert("Please insert valid data !");
+        }
+    }
+
 
     const saveAssignedInventoryDetails = async () => {
 
@@ -377,7 +507,9 @@ const AssignInventoryItemsScreen = () => {
                 projectOwnerName: projectOwner,
                 developer: developer,
                 assignedDate: getCurrentDate(),
-                imageUri: imageSource
+                imageUri: assignedItemImageCollection,
+                simCompanyName: SimCompName,
+                simNumber: simNum
             }
 
             const type = 'addAssignedItemsData';
@@ -397,6 +529,7 @@ const AssignInventoryItemsScreen = () => {
                 setImageSource(null);
                 setResetDropdown(!resetDropdown);
                 setDeveloper('');
+                setAssignedItemImageCollection([]);
             }
             else {
                 alert('Something went wrong');
@@ -435,6 +568,40 @@ const AssignInventoryItemsScreen = () => {
                 />
 
                 <TouchableOpacity style={styles.addBtn} onPress={() => saveNewClient()} disabled={disableAddButton}>
+                    <Text style={styles.saveText}>Add</Text>
+                </TouchableOpacity>
+            </View>
+        )
+
+    }
+
+    const addSimNumModalChildComponent = () => {
+        return (
+            <View style={styles.modalSecondaryContainer}>
+                <Text style={styles.projOwnerTextStyle}>Number :</Text>
+                <InputText
+                    onChangeText={setSimNum}
+                    placeholderText="Enter number"
+                />
+
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveSimNumber()} disabled={disableAddButton}>
+                    <Text style={styles.saveText}>Add</Text>
+                </TouchableOpacity>
+            </View>
+        )
+
+    }
+
+    const addSimCompNameModalChildComponent = () => {
+        return (
+            <View style={styles.modalSecondaryContainer}>
+                <Text style={styles.projOwnerTextStyle}>SIM Compnay Name :</Text>
+                <InputText
+                    onChangeText={setSimCompName}
+                    placeholderText="Enter name"
+                />
+
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveSimCompName()} disabled={disableAddButton}>
                     <Text style={styles.saveText}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -532,6 +699,20 @@ const AssignInventoryItemsScreen = () => {
         )
     }
 
+    const removeImage = async (data) => {
+        await removeImageFromFirebaseStorage(data);
+
+        const filteredData = assignedItemImageCollection.filter((item) => item.id !== data.id);
+
+        setAssignedItemImageCollection(filteredData);
+    }
+
+    const showImagePreviewComponent = () => {
+        return (
+            <ImagePreviewComponent data={assignedItemImageCollection} deletedImage={removeImage} showImagePreview={showImagePreview} />
+        )
+    }
+
     const getModalChildComponent = () => {
         if (isItemModalVisible) {
             return addItemModalChildComponent();
@@ -550,6 +731,15 @@ const AssignInventoryItemsScreen = () => {
         }
         else if (isAddImageModalVisible) {
             return addImageModalChildComponent();
+        }
+        else if (showImagePreview) {
+            return showImagePreviewComponent();
+        }
+        else if (isAddSimNumModalVisible) {
+            return addSimNumModalChildComponent();
+        }
+        else if (addSimCompNameModalVisible) {
+            return addSimCompNameModalChildComponent();
         }
     }
 
@@ -574,6 +764,12 @@ const AssignInventoryItemsScreen = () => {
         else if (isAddImageModalVisible) {
             setIsAddImageModalVisible(false);
         }
+        else if (showImagePreview) {
+            setShowImagePreview(false);
+        }
+        else if (addSimCompNameModalVisible) {
+            setAddSimCompNameModalVisible(false);
+        }
     }
 
     const handleCameraLaunch = () => {
@@ -584,22 +780,45 @@ const AssignInventoryItemsScreen = () => {
                 skipBackup: true,
                 path: 'images',
             },
+            selectionLimit: 5
         };
 
-        launchCamera(options, response => {
-            if (response.didCancel) {
-                alert('User cancelled camera');
-            } else if (response.error) {
-                alert('Camera Error: ', response.error);
-            } else {
-                let imageUri = response.uri || response.assets?.[0]?.uri;
+        let itemImageCollection = [];
 
-                let uploadUri = imageUri.replace('file:///', '');
 
-                handleModalClose();
-                setIsImageLoading(true);
-                setDisableSaveButton(true);
-                addImageToFirebaseStorage(uploadUri);
+        launchCamera(options, async (response) => {
+
+            setAssignedItemImageCollection([]);
+
+            if (!response.didCancel && !response.error) {
+                const { assets } = response;
+
+                try {
+                    const uploadTasks = assets.map(async (item, index) => {
+                        const imageName = 'image_' + Date.now() // Unique name for the image
+                        const reference = storage().ref(`images/${imageName}`);
+
+                        let imageUri = item.uri;
+
+                        let uploadUri = imageUri.replace('file:///', '');
+                        await reference.putFile(uploadUri);
+
+                        // Get the download URL of the uploaded image
+                        const downloadURL = await reference.getDownloadURL();
+
+                        itemImageCollection.push({ id: index, uri: downloadURL, ref: imageName });
+
+                    });
+
+                    await Promise.all(uploadTasks);
+
+                    setAssignedItemImageCollection(itemImageCollection);
+                    handleModalClose();
+                    setIsImageLoading(false);
+                    setDisableSaveButton(false);
+                } catch (error) {
+                    console.error('Error uploading images:', error);
+                }
             }
         });
     }
@@ -611,44 +830,67 @@ const AssignInventoryItemsScreen = () => {
                 skipBackup: true,
                 path: 'images',
             },
+            selectionLimit: 5
         };
 
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                alert('User cancelled image picker');
-            } else if (response.error) {
-                alert('Image picker error: ', response.error);
-            } else {
-                let imageUri = response.uri || response.assets?.[0]?.uri;
+        let itemImageCollection = [];
 
-                let uploadUri = imageUri.replace('file:///', '');
+        launchImageLibrary(options, async (response) => {
 
-                handleModalClose();
-                setIsImageLoading(true);
-                setDisableSaveButton(true);
-                addImageToFirebaseStorage(uploadUri);
+            if (!response.didCancel && !response.error) {
+                const { assets } = response;
 
+                try {
+                    const uploadTasks = assets.map(async (item, index) => {
+
+                        const imageName = 'image_' + Date.now() // Unique name for the image
+
+                        const reference = storage().ref(`images/${imageName}`);
+
+                        let imageUri = item.uri;
+
+                        let uploadUri = imageUri.replace('file:///', '');
+
+                        await reference.putFile(uploadUri);
+
+                        // Get the download URL of the uploaded image
+                        const downloadURL = await reference.getDownloadURL();
+
+                        itemImageCollection.push({ id: index, uri: downloadURL, ref: imageName });
+
+                    });
+
+                    await Promise.all(uploadTasks);
+
+                    setAssignedItemImageCollection(itemImageCollection);
+                    handleModalClose();
+                    setIsImageLoading(false);
+                    setDisableSaveButton(false);
+                } catch (error) {
+                    console.error('Error uploading images:', error);
+                }
             }
         });
-    };
+    }
 
-
-    const addImageToFirebaseStorage = async (imageUri) => {
+    const removeImageFromFirebaseStorage = async (item) => {
 
         const imageName = 'image_' + Date.now() // Unique name for the image
-        const reference = storage().ref(`images/${imageName}`);
-        await reference.putFile(imageUri);
 
-        // Get the download URL of the uploaded image
-        const downloadURL = await reference.getDownloadURL();
-        setIsImageLoading(false);
-        setImageSource(downloadURL); // Set the image URL to state for display
-        setDisableSaveButton(false);
-    };
+        let imageRef = storage().ref(`images/${item.ref}`);
 
+        imageRef
+            .delete()
+            .then(() => {
+                console.log(`${imageName}has been deleted successfully.`);
+            })
+            .catch((e) => console.log('error on image deletion => ', e));
+
+
+    }
     return (
         <SafeAreaView style={styles.baseContainer}>
-            <KeyboardAvoidingView style={styles.keyboardAvoidingViewStyle} behavior='position' keyboardVerticalOffset={ ms(50) }>
+            <KeyboardAvoidingView style={styles.keyboardAvoidingViewStyle} behavior='position' keyboardVerticalOffset={ms(50)}>
                 <View style={styles.headerContainer}>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.headerTextStyle}>Assign Inventory Items</Text>
@@ -664,12 +906,40 @@ const AssignInventoryItemsScreen = () => {
                         </View>
                     </View>
 
-                    <View style={styles.checkBoxContainer}>
-                        <Text style={styles.textTitle}>Item Brand Name :</Text>
-                        <TouchableOpacity style={styles.brandNameContainer}>
-                            <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
-                        </TouchableOpacity>
-                    </View>
+                    {
+                        selectedItem !== 'SIM' &&
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Item Brand Name :</Text>
+                            <TouchableOpacity style={styles.brandNameContainer}>
+                                <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
+                            </TouchableOpacity>
+                        </View>
+                    }
+
+
+                    {
+                        selectedItem === 'SIM' &&
+                        <View>
+                            <View style={styles.checkBoxContainer}>
+                                <Text style={styles.textTitle}>SIM Company Name :</Text>
+                                <TouchableOpacity style={styles.brandNameContainer}>
+                                    <DropdownListComponent data={simCompanyNameData} selectedItem={toggleSimCompanyNameModal} resetSelectedValue={resetDropdown} />
+                                </TouchableOpacity>
+                            </View>
+
+
+                            <View style={styles.checkBoxContainer}>
+                                <Text style={styles.textTitle}>Number :</Text>
+                                <TouchableOpacity style={styles.brandNameContainer}>
+                                    <DropdownListComponent data={simNumListData} selectedItem={toggleSimNumModal} resetSelectedValue={resetDropdown} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+
+                    }
+
+
 
                     <View style={styles.checkBoxContainer}>
                         <Text style={styles.textTitle}>From :</Text>
@@ -701,7 +971,7 @@ const AssignInventoryItemsScreen = () => {
                         </View>
                     }
 
-                    <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
+                    <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible || showImagePreview || isAddSimNumModalVisible || addSimCompNameModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Project Owner :</Text>
@@ -725,13 +995,24 @@ const AssignInventoryItemsScreen = () => {
                         }
 
                         {imageSource ?
-                            <Image source={{ uri: imageSource }} style={styles.imageStyle} />
+                            <View>
+                                <View>
+                                    <Image source={{ uri: imageSource }} style={styles.imageStyle} />
+
+                                    {assignedItemImageCollection.length > 1 &&
+                                        <Text style={styles.imageCountText}>+{assignedItemImageCollection.length - 1}</Text>
+                                    }
+                                </View>
+
+                                <TouchableOpacity onPress={() => setShowImagePreview(true)} >
+                                    <Text style={styles.linkText}>Preview image</Text>
+                                </TouchableOpacity>
+                            </View>
                             :
                             <Text style={styles.subHeadingText}> No Image Selected</Text>
 
                         }
                     </View>
-
 
 
                     <TouchableOpacity style={styles.addImageBtn} onPress={() => setIsAddImageModalVisible(true)}>

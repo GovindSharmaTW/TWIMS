@@ -39,6 +39,19 @@ export const styles = StyleSheet.create({
     color: Colors.gray,
     fontSize: ms(20),
   },
+  imageCountText: {
+    color: Colors.white,
+    fontSize: ms(40),
+    position:'absolute',
+    right:ms(10),
+    bottom:ms(10)
+  },
+  linkText: {
+    color: '#0080ff',
+    fontSize: ms(18),
+    alignSelf:'flex-end',
+    marginTop:ms(5)
+  },
   baseContainer: {
     flex: 1,
   },
@@ -223,6 +236,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: '5%'
   },
   imageStyle:{ height:ms(200), width:ms(200) },
-  keyboardAvoidingViewStyle:{flex:1}
+  keyboardAvoidingViewStyle:{flex:1,marginBottom:ms(50)}
 
 })

@@ -6,6 +6,7 @@ import { DropdownListComponent } from "./DropdownListComponent";
 import { InputText } from './InputText';
 import { ModalComponent } from './ModalComponent';
 import { SearchInputText } from './SearchInputText';
+import { ImagePreviewComponent } from './ImagePreviewComponent';
 
 export {
     ClientListComponent,
@@ -15,5 +16,6 @@ export {
     DropdownListComponent,
     InputText,
     ModalComponent,
-    SearchInputText
+    SearchInputText,
+    ImagePreviewComponent
 }
