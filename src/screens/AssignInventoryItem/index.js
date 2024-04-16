@@ -41,11 +41,13 @@ const AssignInventoryItemsScreen = () => {
     const [simNumListData, setSimNumListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
-    const [isImageLoading, setIsImageLoading] = useState(false);
+    const [isImageLoading, setIsImageLoading] = useState(true);
     const [imageSource, setImageSource] = useState(null);
     const [resetDropdown, setResetDropdown] = useState(false);
     const [assignedItemImageCollection, setAssignedItemImageCollection] = useState([])
     const [showImagePreview, setShowImagePreview] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const toggleModal = (item) => {
         setIsItemModalVisible(item === 'Other');
@@ -785,10 +787,12 @@ const AssignInventoryItemsScreen = () => {
 
         let itemImageCollection = [];
 
-
         launchCamera(options, async (response) => {
 
             setAssignedItemImageCollection([]);
+
+            setLoading(true);
+            handleModalClose();
 
             if (!response.didCancel && !response.error) {
                 const { assets } = response;
@@ -813,11 +817,10 @@ const AssignInventoryItemsScreen = () => {
                     await Promise.all(uploadTasks);
 
                     setAssignedItemImageCollection(itemImageCollection);
-                    handleModalClose();
-                    setIsImageLoading(false);
                     setDisableSaveButton(false);
                 } catch (error) {
-                    console.error('Error uploading images:', error);
+                    stopLoaders();
+                    alert('Error uploading images:', error);
                 }
             }
         });
@@ -836,6 +839,8 @@ const AssignInventoryItemsScreen = () => {
         let itemImageCollection = [];
 
         launchImageLibrary(options, async (response) => {
+            setLoading(true);
+            handleModalClose();
 
             if (!response.didCancel && !response.error) {
                 const { assets } = response;
@@ -863,11 +868,11 @@ const AssignInventoryItemsScreen = () => {
                     await Promise.all(uploadTasks);
 
                     setAssignedItemImageCollection(itemImageCollection);
-                    handleModalClose();
-                    setIsImageLoading(false);
                     setDisableSaveButton(false);
                 } catch (error) {
-                    console.error('Error uploading images:', error);
+                    stopLoaders();
+
+                    alert('Error uploading images:', error);
                 }
             }
         });
@@ -888,6 +893,23 @@ const AssignInventoryItemsScreen = () => {
 
 
     }
+
+    const onLoad = () => {
+        setIsImageLoading(false);
+        setLoading(false);
+    }
+
+    const onError = () => {
+        setError(true);
+        setIsImageLoading(false);
+
+    }
+
+    const stopLoaders = () => {
+        setIsImageLoading(false);
+        setLoading(false);
+    }
+
     return (
         <SafeAreaView style={styles.baseContainer}>
             <KeyboardAvoidingView style={styles.keyboardAvoidingViewStyle} behavior='position' keyboardVerticalOffset={ms(50)}>
@@ -899,6 +921,11 @@ const AssignInventoryItemsScreen = () => {
                 <View style={styles.separatorStyle} />
 
                 <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+
+                    {loading &&
+                        <ActivityIndicator style={styles.primaryLoaderContainer} />
+                    }
+
                     <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Item :</Text>
                         <View style={styles.inputView}>
@@ -990,23 +1017,34 @@ const AssignInventoryItemsScreen = () => {
 
                     <View style={styles.imageContainer}>
                         <Text style={styles.textTitle}>Image :</Text>
-                        {isImageLoading &&
-                            <ActivityIndicator />
-                        }
-
                         {imageSource ?
                             <View>
                                 <View>
-                                    <Image source={{ uri: imageSource }} style={styles.imageStyle} />
-
-                                    {assignedItemImageCollection.length > 1 &&
-                                        <Text style={styles.imageCountText}>+{assignedItemImageCollection.length - 1}</Text>
+                                    {isImageLoading &&
+                                        <ActivityIndicator style={styles.imageLoaderStyle} />
                                     }
+
+                                    {error ?
+                                        <Text style={styles.textStyle}>Got error while loading the image</Text>
+                                        :
+
+                                        <View>
+                                            <Image source={{ uri: imageSource }} style={styles.imageStyle} onLoad={onLoad} onError={onError} />
+
+                                            {(assignedItemImageCollection.length > 1 && !isImageLoading && !error) &&
+                                                <Text style={styles.imageCountText}>+{assignedItemImageCollection.length - 1}</Text>
+                                            }
+                                        </View>
+                                    }
+
                                 </View>
 
-                                <TouchableOpacity onPress={() => setShowImagePreview(true)} >
-                                    <Text style={styles.linkText}>Preview image</Text>
-                                </TouchableOpacity>
+                                {!isImageLoading && !error &&
+                                    <TouchableOpacity onPress={() => setShowImagePreview(true)} >
+                                        <Text style={styles.linkText}>Preview image</Text>
+                                    </TouchableOpacity>
+                                }
+
                             </View>
                             :
                             <Text style={styles.subHeadingText}> No Image Selected</Text>

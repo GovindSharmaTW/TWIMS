@@ -4,21 +4,30 @@ import { styles } from './style';
 import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ms } from '../../utils/scaling-utils';
-import { checkIsEmpty } from '../../utils';
 import { ImagePreviewComponent, ModalComponent } from '../../components';
 
 const ShowInventoryCardDetails = (props) => {
 
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [showImagePreview, setShowImagePreview] = useState(false);
+    const [error, setError] = useState(false);
 
     const data = props?.route?.params?.data;
 
-    const showImagePreviewComponent = () => {
+    const showImagePreviewComponent = () => { 
         return (
             <ImagePreviewComponent data={data.imageUrl} showImagePreview={showImagePreview} showDeleteButton={false} />
         )
     }
+
+    const onLoad = () => {
+        setIsImageLoading(false);
+    };
+
+    const onError = () => {
+        setIsImageLoading(false);
+        setError(true);
+    };
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -115,24 +124,28 @@ const ShowInventoryCardDetails = (props) => {
                     <Text style={styles.textTitle}>Image :</Text>
 
                     {data.imageUrl && isImageLoading &&
-                        <View style={styles.loaderContainer}>
-                            <ActivityIndicator />
-                        </View>
+                        <ActivityIndicator style={styles.loaderContainer} />
                     }
 
-                    {data.imageUrl && data.imageUrl.length > 0 ?
+                    {data.imageUrl && data.imageUrl.length > 0 && !error ?
                         <View>
                             <View>
-                                <Image source={{ uri: data.imageUrl[0].uri }} style={styles.imageStyle} onLoadEnd={() => setIsImageLoading(false)} />
+                                <Image
+                                    source={{ uri: data.imageUrl[0].uri }}
+                                    style={styles.imageStyle}
+                                    onLoad={onLoad}
+                                    onError={onError} />
 
-                                {data.imageUrl.length > 1 &&
+                                {data.imageUrl.length > 1 && !isImageLoading &&
                                     <Text style={styles.imageCountText}>+{data.imageUrl.length - 1}</Text>
                                 }
                             </View>
 
-                            <TouchableOpacity onPress={() => setShowImagePreview(true)} >
-                                <Text style={styles.linkText}>Preview image</Text>
-                            </TouchableOpacity>
+                            {!isImageLoading &&
+                                <TouchableOpacity onPress={() => setShowImagePreview(true)} >
+                                    <Text style={styles.linkText}>Preview image</Text>
+                                </TouchableOpacity>
+                            }
                         </View>
                         :
                         <Text style={styles.subHeadingText}> No Image Found</Text>

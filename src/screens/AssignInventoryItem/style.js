@@ -235,7 +235,32 @@ export const styles = StyleSheet.create({
   modalSecondaryContainer: {
     paddingHorizontal: '5%'
   },
-  imageStyle:{ height:ms(200), width:ms(200) },
-  keyboardAvoidingViewStyle:{flex:1,marginBottom:ms(50)}
+  imageStyle: {
+    height: ms(200),
+    width: ms(200)
+  },
+  keyboardAvoidingViewStyle: {
+    flex: 1,
+    marginBottom: ms(50)
+  },
+  primaryLoaderContainer: {
+    position: 'absolute',
+    top: '60%',
+    right: '50%',
+    zIndex: 15,
+    backgroundColor: Colors.white
+  },
+  imageLoaderStyle: {
+    position: 'absolute',
+    top: '50%',
+    right: '50%',
+    zIndex: 10,
+    backgroundColor: Colors.white
+  },
+  textStyle:{
+    color:Colors.primary,
+    fontSize:Fonts.medium,
+    marginLeft:'5%'
+}
 
 })

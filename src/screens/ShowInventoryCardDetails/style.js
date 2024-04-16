@@ -224,7 +224,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: '5%'
   },
   imageStyle:{ height:ms(200), width:ms(200) },
-  loaderContainer:{ height:ms(200), width:ms(200),justifyContent:'center' },
+  loaderContainer:{ position: 'absolute', top: '50%', left: '50%' },
   textSubTitle:{
     color:Colors.gray,
     fontSize:ms(20),

@@ -5,7 +5,7 @@ import { ms } from "../../utils/scaling-utils";
 export const styles = StyleSheet.create({
     textStyle:{
         color:Colors.primary,
-        fontSize:Fonts.large,
+        fontSize:Fonts.medium,
         marginLeft:'5%'
     },
    separatorStyle:{
@@ -61,5 +61,10 @@ export const styles = StyleSheet.create({
         textAlign:'center',
         marginVertical:ms(20)
     },
+    loaderStyle:{ 
+      position: 'absolute', 
+      top: '50%', 
+      left: '50%' 
+    }
     
 })
