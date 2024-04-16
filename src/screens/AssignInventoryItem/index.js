@@ -711,7 +711,7 @@ const AssignInventoryItemsScreen = () => {
 
     const showImagePreviewComponent = () => {
         return (
-            <ImagePreviewComponent data={assignedItemImageCollection} deletedImage={removeImage} showImagePreview={showImagePreview} showDeleteButton={true}/>
+            <ImagePreviewComponent data={assignedItemImageCollection} deletedImage={removeImage} showImagePreview={showImagePreview} showDeleteButton={true} />
         )
     }
 
@@ -774,6 +774,40 @@ const AssignInventoryItemsScreen = () => {
         }
     }
 
+    const saveImageToFirebaseStorage = async (data) => {
+        let itemImageCollection = [];
+
+        try {
+            const uploadTasks = data.map(async (item, index) => {
+
+                const imageName = 'image_' + Date.now() // Unique name for the image
+
+                const reference = storage().ref(`images/${imageName}`);
+
+                let imageUri = item.uri;
+
+                let uploadUri = imageUri.replace('file:///', '');
+
+                await reference.putFile(uploadUri);
+
+                // Get the download URL of the uploaded image
+                const downloadURL = await reference.getDownloadURL();
+
+                itemImageCollection.push({ id: index, uri: downloadURL, ref: imageName });
+
+            });
+
+            await Promise.all(uploadTasks);
+
+            setAssignedItemImageCollection(itemImageCollection);
+            setDisableSaveButton(false);
+        } catch (error) {
+            stopLoaders();
+
+            alert('Error uploading images:', error);
+        }
+    }
+
     const handleCameraLaunch = () => {
 
         const options = {
@@ -785,8 +819,6 @@ const AssignInventoryItemsScreen = () => {
             selectionLimit: 5
         };
 
-        let itemImageCollection = [];
-
         launchCamera(options, async (response) => {
 
             setAssignedItemImageCollection([]);
@@ -797,31 +829,7 @@ const AssignInventoryItemsScreen = () => {
             if (!response.didCancel && !response.error) {
                 const { assets } = response;
 
-                try {
-                    const uploadTasks = assets.map(async (item, index) => {
-                        const imageName = 'image_' + Date.now() // Unique name for the image
-                        const reference = storage().ref(`images/${imageName}`);
-
-                        let imageUri = item.uri;
-
-                        let uploadUri = imageUri.replace('file:///', '');
-                        await reference.putFile(uploadUri);
-
-                        // Get the download URL of the uploaded image
-                        const downloadURL = await reference.getDownloadURL();
-
-                        itemImageCollection.push({ id: index, uri: downloadURL, ref: imageName });
-
-                    });
-
-                    await Promise.all(uploadTasks);
-
-                    setAssignedItemImageCollection(itemImageCollection);
-                    setDisableSaveButton(false);
-                } catch (error) {
-                    stopLoaders();
-                    alert('Error uploading images:', error);
-                }
+                saveImageToFirebaseStorage(assets);
             }
         });
     }
@@ -836,7 +844,6 @@ const AssignInventoryItemsScreen = () => {
             selectionLimit: 5
         };
 
-        let itemImageCollection = [];
 
         launchImageLibrary(options, async (response) => {
             setLoading(true);
@@ -844,36 +851,7 @@ const AssignInventoryItemsScreen = () => {
 
             if (!response.didCancel && !response.error) {
                 const { assets } = response;
-
-                try {
-                    const uploadTasks = assets.map(async (item, index) => {
-
-                        const imageName = 'image_' + Date.now() // Unique name for the image
-
-                        const reference = storage().ref(`images/${imageName}`);
-
-                        let imageUri = item.uri;
-
-                        let uploadUri = imageUri.replace('file:///', '');
-
-                        await reference.putFile(uploadUri);
-
-                        // Get the download URL of the uploaded image
-                        const downloadURL = await reference.getDownloadURL();
-
-                        itemImageCollection.push({ id: index, uri: downloadURL, ref: imageName });
-
-                    });
-
-                    await Promise.all(uploadTasks);
-
-                    setAssignedItemImageCollection(itemImageCollection);
-                    setDisableSaveButton(false);
-                } catch (error) {
-                    stopLoaders();
-
-                    alert('Error uploading images:', error);
-                }
+                saveImageToFirebaseStorage(assets);
             }
         });
     }
