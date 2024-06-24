@@ -7,6 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
 import { checkIsEmpty } from '../../utils';
+import Toast from 'react-native-simple-toast';
 
 const ShowInventoryDetailsScreen = (props) => {
 
@@ -57,7 +58,7 @@ const ShowInventoryDetailsScreen = (props) => {
             clearStates();
         }
         else {
-            alert("No Data Found");
+            Toast.show("No Data Found");
             clearStates();
         }
     }

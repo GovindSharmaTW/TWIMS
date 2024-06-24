@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
 import { Colors } from "../../constants";
 
-export const InputText = ({ onChangeText, placeholderText, disable }) => {
+export const InputText = ({ onChangeText, placeholderText, disable, reset }) => {
 
     const [value, setValue] = useState('');
+
+    useEffect(() => {
+        setValue('');
+    }, [reset])
 
     return (
         <View style={styles.inputContainerStyle}>

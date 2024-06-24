@@ -1,5 +1,6 @@
 import database from '@react-native-firebase/database';
 import { assignedItemDetailsRef, branchRef, clientsRef, developerRef, employeeRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from './firebaseConstants';
+import Toast from 'react-native-simple-toast';
 
 const getRef = (type) => {
     switch (type) {
@@ -38,16 +39,16 @@ export const addNewData = async (params) => {
 
             newReference
                 .set(data).then(() => {
-                    alert('new data added successfully');
+                    Toast.show('new data added successfully');
                     resolve('success');
                 }).catch((err) => {
-                    alert('Someting went wrong', err);
+                    Toast.show('Someting went wrong', err);
                     resolve('failure')
                 })
         }
         else {
 
-            alert('Please insert valid data !');
+            Toast.show('Please insert valid data !');
             resolve('failure');
 
         }

@@ -10,6 +10,7 @@ import { checkIsEmpty, getCurrentDate } from '../../utils';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { ms } from '../../utils/scaling-utils';
+import Toast from 'react-native-simple-toast';
 
 const AssignInventoryItemsScreen = () => {
 
@@ -339,12 +340,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -373,12 +374,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -404,12 +405,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -434,12 +435,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -463,12 +464,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -492,12 +493,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -521,12 +522,12 @@ const AssignInventoryItemsScreen = () => {
                 setDisableAddButton(false);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
@@ -555,19 +556,19 @@ const AssignInventoryItemsScreen = () => {
                 setBranchCity('');
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableAddButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show("Please insert valid data !");
         }
     }
 
 
     const saveAssignedInventoryDetails = async () => {
 
-        if (checkIsEmpty(selectedItem, selectedItemBrandName, selectedClient, projectOwner, developer)) {
+        if (selectedItem !== "" && selectedItemBrandName !== "" && developer !== "" && itemSerialNum !== "" && branchName !== "" ) {
             setDisableSaveButton(true);
 
             const data = {
@@ -608,12 +609,12 @@ const AssignInventoryItemsScreen = () => {
                 setAssignedItemImageCollection([]);
             }
             else {
-                alert('Something went wrong');
+                Toast.show('Something went wrong');
                 setDisableSaveButton(false);
             }
         }
         else {
-            alert("Please insert valid data !");
+            Toast.show('Please insert valid data !');
         }
     }
 
@@ -910,7 +911,7 @@ const AssignInventoryItemsScreen = () => {
         } catch (error) {
             stopLoaders();
 
-            alert('Error uploading images:', error);
+            Toast.show(`Error uploading images: ${error}`)
         }
     }
 
@@ -1111,6 +1112,8 @@ const AssignInventoryItemsScreen = () => {
                             <InputText
                                 onChangeText={setItemSerialNum}
                                 placeholderText="Enter serial no."
+                                value={itemSerialNum}
+                                reset={resetDropdown}
                             />
                         </View>
                     </View>

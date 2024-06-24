@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { styles } from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import { ms } from '../../utils/scaling-utils';
 import { Colors } from '../../constants';
+import Toast from 'react-native-simple-toast';
+
 
 const LoginScreen = (props) => {
 
@@ -40,20 +42,20 @@ const LoginScreen = (props) => {
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
-            Alert.alert('That email address is already in use!');
+            Toast.show('That email address is already in use!');
           }
 
           if (error.code === 'auth/invalid-email') {
-            Alert.alert('That email address is invalid!');
+            Toast.show('That email address is invalid!');
           }
 
           if (error.code === 'auth/invalid-credential') {
-            Alert.alert("Invalid credentials!");
+            Toast.show("Invalid credentials!");
           }
         });
     }
     else {
-      Alert.alert("Please enter email and password");
+      Toast.show("Please enter email and password");
     }
   }
 
