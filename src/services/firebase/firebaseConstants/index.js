@@ -6,6 +6,7 @@ const simCompNameRef = '/simCompanyName';
 const clientsRef = '/Clients';
 const assignedItemDetailsRef = '/AssignedInventoryDetails';
 const simNumberRef = '/simNumbers';
+const branchRef = '/branch';
 
 export {
     projectOwnerRef,
@@ -15,5 +16,6 @@ export {
     clientsRef,
     assignedItemDetailsRef,
     simNumberRef,
-    simCompNameRef
+    simCompNameRef,
+    branchRef
 }

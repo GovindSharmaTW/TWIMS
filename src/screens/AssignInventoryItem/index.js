@@ -5,7 +5,7 @@ import { DropdownListComponent, ImagePreviewComponent, InputText, ModalComponent
 import CheckBox from '@react-native-community/checkbox';
 import database from '@react-native-firebase/database';
 import { addNewData } from '../../services/firebase';
-import { clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from '../../services/firebase/firebaseConstants';
+import { branchRef, clientsRef, developerRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from '../../services/firebase/firebaseConstants';
 import { checkIsEmpty, getCurrentDate } from '../../utils';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
@@ -20,12 +20,17 @@ const AssignInventoryItemsScreen = () => {
     const [isAddSimNumModalVisible, setIsAddSimNumModalVisible] = useState(false);
     const [isAddProOwnerModalVisible, setIsAddProOwnerModalVisible] = useState(false);
     const [isAddDeveloperModalVisible, setIsAddDeveloperModalVisible] = useState(false);
+    const [isAddBranchModalVisible, setIsAddBranchModalVisible] = useState(false);
     const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
     const [selectedClient, setSelectedClient] = useState('');
     const [simNum, setSimNum] = useState('');
     const [SimCompName, setSimCompName] = useState('');
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
+    const [branchName, setBranchName] = useState('');
+    const [branchState, setBranchState] = useState('');
+    const [branchCity, setBranchCity] = useState('');
+    const [itemSerialNum, setItemSerialNum] = useState('');
     const [fromClient, setFromClient] = useState(false);
     const [fromThoughtWin, setFromThoughtWin] = useState(false);
     const [projectOwner, setProjectOwner] = useState('');
@@ -39,6 +44,7 @@ const AssignInventoryItemsScreen = () => {
     const [developerListData, setDeveloperListData] = useState([]);
     const [projectOwnerListData, setProjectOwnerListData] = useState([]);
     const [simNumListData, setSimNumListData] = useState([]);
+    const [branchNameListData, setBranchNameListData] = useState([]);
     const [disableSaveButton, setDisableSaveButton] = useState(false);
     const [disableAddButton, setDisableAddButton] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(true);
@@ -84,6 +90,11 @@ const AssignInventoryItemsScreen = () => {
         setIsAddDeveloperModalVisible(item === 'Other');
         setDeveloper(item);
 
+    };
+
+    const toggleBranchModal = (item) => {
+        setIsAddBranchModalVisible(item === 'Other');
+        setBranchName(item);
     };
 
     const handleCheckbox1Change = () => {
@@ -256,6 +267,31 @@ const AssignInventoryItemsScreen = () => {
             }
         });
 
+        const branchNameRef = database().ref(branchRef);
+
+        const unsubscribebranch = branchNameRef.on('value', snapshot => {
+
+            const data = snapshot?.val();
+
+            if (data === null || data === undefined) {
+
+                setBranchNameListData([{ label: 'Other', value: 'T001' }]);
+            }
+            else {
+
+                const tempData = Object.keys(data).map((key, index) => {
+                    return { label: data[key].branch_name, value: `T00${index}` };
+                });
+
+                if (tempData.length === Object.keys(data).length) {
+                    tempData.push({ label: 'Other', value: 'T001' });
+                }
+
+                setBranchNameListData(tempData);
+
+            }
+        });
+
         return () => {
             unsubscribeProOwner();
             unsubscribeDeveloper();
@@ -264,7 +300,7 @@ const AssignInventoryItemsScreen = () => {
             unsubscribeBrandName();
             unsubscribeSimNum();
             unsubscribeSimCompName();
-
+            unsubscribebranch();
         }
     }, []);
 
@@ -494,6 +530,40 @@ const AssignInventoryItemsScreen = () => {
         }
     }
 
+    const saveBranchData = async () => {
+
+        if (checkIsEmpty(branchName) && checkIsEmpty(branchState) && checkIsEmpty(branchCity) && branchName !== 'Other') {
+            setDisableAddButton(true);
+
+            const type = 'addBranch';
+
+            const data = {
+                branch_name: branchName,
+                branch_state: branchState,
+                branch_city: branchCity
+            };
+
+            const params = { data, type };
+
+            const res = await addNewData(params);
+
+            if (res === 'success') {
+                setIsAddBranchModalVisible(false);
+                setDisableAddButton(false);
+                setBranchName('');
+                setBranchState('');
+                setBranchCity('');
+            }
+            else {
+                alert('Something went wrong');
+                setDisableAddButton(false);
+            }
+        }
+        else {
+            alert("Please insert valid data !");
+        }
+    }
+
 
     const saveAssignedInventoryDetails = async () => {
 
@@ -511,7 +581,10 @@ const AssignInventoryItemsScreen = () => {
                 assignedDate: getCurrentDate(),
                 imageUri: assignedItemImageCollection,
                 simCompanyName: SimCompName,
-                simNumber: simNum
+                simNumber: simNum,
+                item_serial_num: itemSerialNum,
+                branch: branchName
+
             }
 
             const type = 'addAssignedItemsData';
@@ -531,6 +604,7 @@ const AssignInventoryItemsScreen = () => {
                 setImageSource(null);
                 setResetDropdown(!resetDropdown);
                 setDeveloper('');
+                setItemSerialNum('');
                 setAssignedItemImageCollection([]);
             }
             else {
@@ -604,6 +678,35 @@ const AssignInventoryItemsScreen = () => {
                 />
 
                 <TouchableOpacity style={styles.addBtn} onPress={() => saveSimCompName()} disabled={disableAddButton}>
+                    <Text style={styles.saveText}>Add</Text>
+                </TouchableOpacity>
+            </View>
+        )
+
+    }
+
+    const addBranchModalChildComponent = () => {
+        return (
+            <View style={styles.modalSecondaryContainer}>
+                <Text style={styles.projOwnerTextStyle}>Branch Name :</Text>
+                <InputText
+                    onChangeText={setBranchName}
+                    placeholderText="Enter branch name"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Branch State :</Text>
+                <InputText
+                    onChangeText={setBranchState}
+                    placeholderText="Enter branch state"
+                />
+
+                <Text style={styles.projOwnerTextStyle}>Branch City :</Text>
+                <InputText
+                    onChangeText={setBranchCity}
+                    placeholderText="Enter branch city"
+                />
+
+                <TouchableOpacity style={styles.addBtn} onPress={() => saveBranchData()} disabled={disableAddButton}>
                     <Text style={styles.saveText}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -742,6 +845,9 @@ const AssignInventoryItemsScreen = () => {
         }
         else if (addSimCompNameModalVisible) {
             return addSimCompNameModalChildComponent();
+        }
+        else if (isAddBranchModalVisible) {
+            return addBranchModalChildComponent();
         }
     }
 
@@ -976,7 +1082,7 @@ const AssignInventoryItemsScreen = () => {
                         </View>
                     }
 
-                    <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible || showImagePreview || isAddSimNumModalVisible || addSimCompNameModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
+                    <ModalComponent isVisible={isItemModalVisible || isClientListModalVisible || isBrandListModalVisible || isAddProOwnerModalVisible || isAddDeveloperModalVisible || isAddImageModalVisible || showImagePreview || isAddSimNumModalVisible || addSimCompNameModalVisible || isAddBranchModalVisible} childComponent={getModalChildComponent()} closeModal={() => handleModalClose()} />
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Project Owner :</Text>
@@ -986,9 +1092,26 @@ const AssignInventoryItemsScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Branch :</Text>
+                        <View style={styles.inputView}>
+                            <DropdownListComponent data={branchNameListData} selectedItem={(item) => toggleBranchModal(item)} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
+
+                    <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Developer :</Text>
                         <View style={styles.inputView}>
                             <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Serial no. :</Text>
+                        <View style={styles.inputView}>
+                            <InputText
+                                onChangeText={setItemSerialNum}
+                                placeholderText="Enter serial no."
+                            />
                         </View>
                     </View>
 

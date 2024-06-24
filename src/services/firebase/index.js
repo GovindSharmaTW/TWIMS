@@ -1,5 +1,5 @@
 import database from '@react-native-firebase/database';
-import { assignedItemDetailsRef, clientsRef, developerRef, employeeRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from './firebaseConstants';
+import { assignedItemDetailsRef, branchRef, clientsRef, developerRef, employeeRef, inventoryItemsBrandNameRef, inventoryItemsRef, projectOwnerRef, simCompNameRef, simNumberRef } from './firebaseConstants';
 
 const getRef = (type) => {
     switch (type) {
@@ -19,6 +19,8 @@ const getRef = (type) => {
             return simNumberRef;
         case 'addSimCompName':
             return simCompNameRef;
+        case 'addBranch':
+            return branchRef;
 
     }
 }
