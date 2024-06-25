@@ -345,7 +345,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -379,7 +379,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -410,7 +410,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -440,7 +440,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -469,7 +469,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -498,7 +498,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -527,7 +527,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -561,7 +561,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show("Please insert valid data !");
+            Toast.show("All data is required !");
         }
     }
 
@@ -614,7 +614,7 @@ const AssignInventoryItemsScreen = () => {
             }
         }
         else {
-            Toast.show('Please insert valid data !');
+            Toast.show('Please fill all required fields data !');
         }
     }
 
@@ -931,6 +931,7 @@ const AssignInventoryItemsScreen = () => {
             setAssignedItemImageCollection([]);
 
             setLoading(true);
+            disableAddButton(true);
             handleModalClose();
 
             if (!response.didCancel && !response.error) {
@@ -954,6 +955,7 @@ const AssignInventoryItemsScreen = () => {
 
         launchImageLibrary(options, async (response) => {
             setLoading(true);
+            setDisableAddButton(true);
             handleModalClose();
 
             if (!response.didCancel && !response.error) {
@@ -982,17 +984,20 @@ const AssignInventoryItemsScreen = () => {
     const onLoad = () => {
         setIsImageLoading(false);
         setLoading(false);
+        setDisableAddButton(false);
     }
 
     const onError = () => {
         setError(true);
         setIsImageLoading(false);
+        setDisableAddButton(false);
 
     }
 
     const stopLoaders = () => {
         setIsImageLoading(false);
         setLoading(false);
+        setDisableAddButton(false);
     }
 
     return (
@@ -1012,7 +1017,7 @@ const AssignInventoryItemsScreen = () => {
                     }
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.textTitle}>Item :</Text>
+                        <Text style={styles.textTitle}>Item* :</Text>
                         <View style={styles.inputView}>
                             <DropdownListComponent data={itemListData} selectedItem={toggleModal} resetSelectedValue={resetDropdown} />
                         </View>
@@ -1021,7 +1026,7 @@ const AssignInventoryItemsScreen = () => {
                     {
                         selectedItem !== 'SIM' &&
                         <View style={styles.checkBoxContainer}>
-                            <Text style={styles.textTitle}>Item Brand Name :</Text>
+                            <Text style={styles.textTitle}>Item Brand Name* :</Text>
                             <TouchableOpacity style={styles.brandNameContainer}>
                                 <DropdownListComponent data={brandListData} selectedItem={toggleItemBrandListModal} resetSelectedValue={resetDropdown} />
                             </TouchableOpacity>
@@ -1093,21 +1098,21 @@ const AssignInventoryItemsScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.textTitle}>Branch :</Text>
+                        <Text style={styles.textTitle}>Branch* :</Text>
                         <View style={styles.inputView}>
                             <DropdownListComponent data={branchNameListData} selectedItem={(item) => toggleBranchModal(item)} resetSelectedValue={resetDropdown} />
                         </View>
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.textTitle}>Developer :</Text>
+                        <Text style={styles.textTitle}>Developer* :</Text>
                         <View style={styles.inputView}>
                             <DropdownListComponent data={developerListData} selectedItem={(item) => toggleDeveloperModal(item)} resetSelectedValue={resetDropdown} />
                         </View>
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.textTitle}>Serial no. :</Text>
+                        <Text style={styles.textTitle}>Serial no.* :</Text>
                         <View style={styles.inputView}>
                             <InputText
                                 onChangeText={setItemSerialNum}
