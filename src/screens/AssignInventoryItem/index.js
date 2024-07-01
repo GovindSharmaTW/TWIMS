@@ -28,6 +28,8 @@ const AssignInventoryItemsScreen = () => {
     const [simNum, setSimNum] = useState('');
     const [SimCompName, setSimCompName] = useState('');
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
+    const [itemConfig, setItemConfig] = useState('');
+    const [itemPrice, setItemPrice] = useState('');
     const [branchName, setBranchName] = useState('');
     const [branchState, setBranchState] = useState('');
     const [branchCity, setBranchCity] = useState('');
@@ -39,6 +41,7 @@ const AssignInventoryItemsScreen = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [itemListData, setItemListData] = useState([]);
+    const [serialNumListData, setSerialNumListData] = useState([]);
     const [brandListData, setBrandListData] = useState([]);
     const [simCompanyNameData, setSimCompanyNameData] = useState([]);
     const [clientListData, setClientListData] = useState([]);
@@ -168,8 +171,12 @@ const AssignInventoryItemsScreen = () => {
                 setItemListData([{ label: 'Other', value: 'T001' }]);
             }
             else {
-                const tempData = Object.keys(data).map(key => {
-                    return { label: data[key].itemName, value: data[key].itemId };
+                const tempData = Object.keys(data).map((key, index) => {
+                    return { label: data[key].itemName, value: `T00${index}` };
+                });
+
+                const tempSerialNumData = Object.keys(data).map((key, index) => {
+                    return { label: data[key].itemSerialNumber, value: `T00${index}` };
                 });
 
                 if (tempData.length === Object.keys(data).length) {
@@ -177,6 +184,7 @@ const AssignInventoryItemsScreen = () => {
                 }
 
                 setItemListData(tempData);
+                setSerialNumListData(tempSerialNumData);
             }
         });
 
@@ -385,12 +393,18 @@ const AssignInventoryItemsScreen = () => {
 
     const saveNewItem = async () => {
 
-        if (checkIsEmpty(selectedItem) && selectedItem !== 'Other') {
+        if (checkIsEmpty(selectedItem) && checkIsEmpty(selectedItemBrandName) &&
+            checkIsEmpty(itemConfig) && checkIsEmpty(itemSerialNum) &&
+            checkIsEmpty(itemPrice) && selectedItem !== 'Other') {
 
             setDisableAddButton(true);
 
             const data = {
-                itemName: selectedItem
+                itemName: selectedItem,
+                itemBrandName: selectedItemBrandName,
+                itemConfiguration: itemConfig,
+                itemSerialNumber: itemSerialNum,
+                itemPrice: itemPrice
             };
 
             const type = 'addItem';
@@ -568,7 +582,7 @@ const AssignInventoryItemsScreen = () => {
 
     const saveAssignedInventoryDetails = async () => {
 
-        if (selectedItem !== "" && selectedItemBrandName !== "" && developer !== "" && itemSerialNum !== "" && branchName !== "" ) {
+        if (selectedItem !== "" && selectedItemBrandName !== "" && developer !== "" && itemSerialNum !== "" && branchName !== "") {
             setDisableSaveButton(true);
 
             const data = {
@@ -625,6 +639,31 @@ const AssignInventoryItemsScreen = () => {
                 <InputText
                     onChangeText={setSelectedItem}
                     placeholderText="Enter item name"
+                />
+
+                <Text style={styles.projOwnerTextStyle}> Brand Name :</Text>
+                <InputText
+                    onChangeText={setSelectedItemBrandName}
+                    placeholderText="Enter brand name"
+                />
+
+                <Text style={styles.projOwnerTextStyle}> Item Configuration :</Text>
+                <InputText
+                    onChangeText={setItemConfig}
+                    placeholderText="Enter configuration details"
+                />
+
+                <Text style={styles.projOwnerTextStyle}> Item Price :</Text>
+                <InputText
+                    onChangeText={setItemPrice}
+                    placeholderText="Enter price"
+                    type='num'
+                />
+
+                <Text style={styles.projOwnerTextStyle}> Item Serial No. :</Text>
+                <InputText
+                    onChangeText={setItemSerialNum}
+                    placeholderText="Enter serial no."
                 />
 
                 <TouchableOpacity style={styles.addBtn} onPress={saveNewItem} disabled={disableAddButton}>
@@ -974,7 +1013,7 @@ const AssignInventoryItemsScreen = () => {
         imageRef
             .delete()
             .then(() => {
-                console.log(`${imageName}has been deleted successfully.`);
+        Toast(`${imageName}has been deleted successfully.`);
             })
             .catch((e) => console.log('error on image deletion => ', e));
 
@@ -1112,6 +1151,13 @@ const AssignInventoryItemsScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
+                        <Text style={styles.textTitle}>Serial No.* :</Text>
+                        <View style={styles.inputView}>
+                            <DropdownListComponent data={serialNumListData} selectedItem={(item) => setItemSerialNum(item)} resetSelectedValue={resetDropdown} />
+                        </View>
+                    </View>
+
+                    {/* <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Serial no.* :</Text>
                         <View style={styles.inputView}>
                             <InputText
@@ -1121,7 +1167,7 @@ const AssignInventoryItemsScreen = () => {
                                 reset={resetDropdown}
                             />
                         </View>
-                    </View>
+                    </View> */}
 
 
                     <View style={styles.imageContainer}>

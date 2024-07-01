@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ms } from '../../utils/scaling-utils';
 import { ImagePreviewComponent, ModalComponent } from '../../components';
+import { inventoryItemsRef } from '../../services/firebase/firebaseConstants';
+import database from '@react-native-firebase/database';
 
 const ShowInventoryCardDetails = (props) => {
 
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [showImagePreview, setShowImagePreview] = useState(false);
+    const [itemConfigData, setItemConfigData] = useState({});
     const [error, setError] = useState(false);
 
     const data = props?.route?.params?.data;
 
-    const showImagePreviewComponent = () => { 
+    const showImagePreviewComponent = () => {
         return (
             <ImagePreviewComponent data={data.imageUrl} showImagePreview={showImagePreview} showDeleteButton={false} />
         )
@@ -28,6 +31,30 @@ const ShowInventoryCardDetails = (props) => {
         setIsImageLoading(false);
         setError(true);
     };
+
+    useEffect(() => {
+        const inventoryItemRef = database().ref(inventoryItemsRef);
+
+        const unsubscribeInventoryItem = inventoryItemRef.on('value', snapshot => {
+
+            const firebseData = snapshot?.val();
+
+            const tempData = Object.keys(firebseData).map((key, index) => {
+                return { item_serial_number: firebseData[key].itemSerialNumber, item_configuration: firebseData[key].itemConfiguration, item_price : firebseData[key].itemPrice };
+            });
+
+            if (tempData.length > 0) {
+
+                const foundObject = tempData.find((item) => item.item_serial_number === data.itemSerialNumber);
+
+                setItemConfigData(foundObject);
+            }
+        })
+
+        return () => {
+            unsubscribeInventoryItem();
+        }
+    }, [])
 
     return (
         <SafeAreaView style={styles.baseContainer}>
@@ -50,12 +77,35 @@ const ShowInventoryCardDetails = (props) => {
                 </View>
 
                 {data.item !== "SIM" &&
-                    <View style={styles.checkBoxContainer}>
-                        <Text style={styles.textTitle}>Item Brand Name :</Text>
-                        <TouchableOpacity style={styles.brandNameContainer}>
-                            <Text style={styles.textSubTitle}>{data.itemBrandName}</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <>
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Item Brand Name :</Text>
+                            <View style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{data.itemBrandName}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Item Serial No. :</Text>
+                            <View style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{data.itemSerialNumber}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Item Price :</Text>
+                            <View style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{itemConfigData.item_price}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Configuration :</Text>
+                            <View style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{itemConfigData.item_configuration}</Text>
+                            </View>
+                        </View>
+                    </>
                 }
 
                 <View style={styles.checkBoxContainer}>
@@ -84,19 +134,24 @@ const ShowInventoryCardDetails = (props) => {
                         </TouchableOpacity>
                     </View>
                 }
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>Sim Company Name :</Text>
-                    <TouchableOpacity style={styles.brandNameContainer}>
-                        <Text style={styles.textSubTitle}>{data.assignedSimCompName}</Text>
-                    </TouchableOpacity>
-                </View>
 
-                <View style={styles.checkBoxContainer}>
-                    <Text style={styles.textTitle}>Sim Number :</Text>
-                    <TouchableOpacity style={styles.brandNameContainer}>
-                        <Text style={styles.textSubTitle}>{data.assignedSimNumber}</Text>
-                    </TouchableOpacity>
-                </View>
+                {data.item == "SIM" &&
+                    <>
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Sim Company Name :</Text>
+                            <TouchableOpacity style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{data.assignedSimCompName}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.checkBoxContainer}>
+                            <Text style={styles.textTitle}>Sim Number :</Text>
+                            <TouchableOpacity style={styles.brandNameContainer}>
+                                <Text style={styles.textSubTitle}>{data.assignedSimNumber}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                }
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.textTitle}>Project Owner :</Text>

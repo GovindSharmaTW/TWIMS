@@ -78,6 +78,7 @@ const ShowInventoryDetailsScreen = (props) => {
                         value: index,
                         item: data[key].item,
                         itemBrandName: data[key].itemBrandName,
+                        itemSerialNumber: data[key].item_serial_num,
                         fromClient: data[key].fromClient,
                         fromThoughtWin: data[key].fromThoughtWin,
                         clientName: data[key].clientName,

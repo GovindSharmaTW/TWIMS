@@ -162,7 +162,7 @@ export const styles = StyleSheet.create({
     },
     cardListContainer: {
         marginVertical: ms(10),
-        marginBottom: ms(180)
+        marginBottom: ms(250)
     },
     filterIconContainer: {
         alignSelf: 'flex-end'
