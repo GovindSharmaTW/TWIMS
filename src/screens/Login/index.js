@@ -81,7 +81,7 @@ const LoginScreen = (props) => {
           secureTextEntry={showPassword}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={()=>setShowPassword(!showPassword)}>
+        <TouchableOpacity onPress={()=>setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
           <Feather name= {showPassword ?  'eye-off' : "eye"} size={ms(15)} color={Colors.black} />
         </TouchableOpacity>
       </View>

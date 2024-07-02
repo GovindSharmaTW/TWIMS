@@ -17,7 +17,6 @@ export const styles = StyleSheet.create({
       marginBottom: ms(40),
     },
     inputView: {
-      width: '90%',
       backgroundColor: Colors.white,
       borderColor: Colors.primary,
       borderWidth: 1,
@@ -32,6 +31,7 @@ export const styles = StyleSheet.create({
     inputText: {
       height: ms(50),
       color: Colors.black,
+      width: '90%',
     },
     loginBtn: {
       width: '90%',
@@ -46,4 +46,8 @@ export const styles = StyleSheet.create({
     loginText: {
       color: Colors.white,
     },
-  });
+    eyeIconContainer: {
+      position: 'absolute',
+      right: 20
+    }
+});
