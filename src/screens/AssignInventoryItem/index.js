@@ -26,7 +26,7 @@ const AssignInventoryItemsScreen = () => {
     const [selectedItem, setSelectedItem] = useState('');
     const [selectedClient, setSelectedClient] = useState('');
     const [simNum, setSimNum] = useState('');
-    const [SimCompName, setSimCompName] = useState('');
+    const [simCompName, setSimCompName] = useState('');
     const [selectedItemBrandName, setSelectedItemBrandName] = useState('');
     const [itemConfig, setItemConfig] = useState('');
     const [itemPrice, setItemPrice] = useState('');
@@ -518,13 +518,13 @@ const AssignInventoryItemsScreen = () => {
 
     const saveSimCompName = async () => {
 
-        if (checkIsEmpty(SimCompName) && SimCompName !== 'Other') {
+        if (checkIsEmpty(simCompName) && simCompName !== 'Other') {
             setDisableAddButton(true);
 
             const type = 'addSimCompName';
 
             const data = {
-                simCompanyName: SimCompName
+                simCompanyName: simCompName
             };
 
             const params = { data, type };
@@ -579,53 +579,59 @@ const AssignInventoryItemsScreen = () => {
         }
     }
 
+    const addDataToDB = async () => {
+        const data = {
+            item: selectedItem,
+            itemBrandName: selectedItemBrandName,
+            fromClient: fromClient,
+            fromThoughtWin: fromThoughtWin,
+            clientName: selectedClient,
+            projectOwnerName: projectOwner,
+            developer: developer,
+            assignedDate: getCurrentDate(),
+            imageUri: assignedItemImageCollection,
+            simCompanyName: simCompName,
+            simNumber: simNum,
+            item_serial_num: itemSerialNum,
+            branch: branchName
+
+        }
+
+        const type = 'addAssignedItemsData';
+
+        const params = { data, type };
+
+        const res = await addNewData(params);
+
+        if (res === 'success') {
+            setSelectedItem('');
+            setSelectedItemBrandName('');
+            setFromClient(false);
+            setFromThoughtWin(false);
+            setSelectedClient('');
+            setProjectOwner('');
+            setDisableSaveButton(false);
+            setImageSource(null);
+            setResetDropdown(!resetDropdown);
+            setDeveloper('');
+            setItemSerialNum('');
+            setAssignedItemImageCollection([]);
+        }
+        else {
+            Toast.show('Something went wrong');
+            setDisableSaveButton(false);
+        }
+    }
+
 
     const saveAssignedInventoryDetails = async () => {
 
         if (selectedItem !== "" && selectedItemBrandName !== "" && developer !== "" && itemSerialNum !== "" && branchName !== "") {
             setDisableSaveButton(true);
-
-            const data = {
-                item: selectedItem,
-                itemBrandName: selectedItemBrandName,
-                fromClient: fromClient,
-                fromThoughtWin: fromThoughtWin,
-                clientName: selectedClient,
-                projectOwnerName: projectOwner,
-                developer: developer,
-                assignedDate: getCurrentDate(),
-                imageUri: assignedItemImageCollection,
-                simCompanyName: SimCompName,
-                simNumber: simNum,
-                item_serial_num: itemSerialNum,
-                branch: branchName
-
-            }
-
-            const type = 'addAssignedItemsData';
-
-            const params = { data, type };
-
-            const res = await addNewData(params);
-
-            if (res === 'success') {
-                setSelectedItem('');
-                setSelectedItemBrandName('');
-                setFromClient(false);
-                setFromThoughtWin(false);
-                setSelectedClient('');
-                setProjectOwner('');
-                setDisableSaveButton(false);
-                setImageSource(null);
-                setResetDropdown(!resetDropdown);
-                setDeveloper('');
-                setItemSerialNum('');
-                setAssignedItemImageCollection([]);
-            }
-            else {
-                Toast.show('Something went wrong');
-                setDisableSaveButton(false);
-            }
+            addDataToDB();
+        }
+        else if(selectedItem == 'SIM' && checkIsEmpty(simCompName) && checkIsEmpty(simNum) && developer !== ""  && branchName !== "" ){
+            addDataToDB();
         }
         else {
             Toast.show('Please fill all required fields data !');
@@ -1015,7 +1021,7 @@ const AssignInventoryItemsScreen = () => {
             .then(() => {
         Toast(`${imageName}has been deleted successfully.`);
             })
-            .catch((e) => console.log('error on image deletion => ', e));
+            .catch((e) => Toast(`error on image deletion =>  ${e}`));
 
 
     }
@@ -1150,12 +1156,16 @@ const AssignInventoryItemsScreen = () => {
                         </View>
                     </View>
 
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.textTitle}>Serial No.* :</Text>
-                        <View style={styles.inputView}>
-                            <DropdownListComponent data={serialNumListData} selectedItem={(item) => setItemSerialNum(item)} resetSelectedValue={resetDropdown} />
+                    {
+                        selectedItem !== 'SIM' &&
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.textTitle}>Serial No.* :</Text>
+                            <View style={styles.inputView}>
+                                <DropdownListComponent data={serialNumListData} selectedItem={(item) => setItemSerialNum(item)} resetSelectedValue={resetDropdown} />
+                            </View>
                         </View>
-                    </View>
+                    }
 
                     {/* <View style={styles.inputContainer}>
                         <Text style={styles.textTitle}>Serial no.* :</Text>
